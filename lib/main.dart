@@ -1,4 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'dart:convert';
+import 'package:html/parser.dart' as parser;
+import 'package:html/dom.dart' as dom;
+import 'Conference.dart';
+import 'Track.dart';
+import 'Session.dart';
 
 void main() => runApp(MyApp());
 
@@ -6,21 +14,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+    return CupertinoApp(
+      title: 'ASCIIWWDC',
+      theme: new CupertinoThemeData(
+        primaryColor: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'ASCIIWWDC'),
     );
   }
 }
@@ -43,18 +42,186 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+
+
+class _MyHomePageState extends State<MyHomePage> {
+
+  List<Conference> _conferences;
+
+
+  bool hasData = false;
+
+  final String URL_PREFIX = 'https://www.asciiwwdc.com';
+
+
+
+  List<Session> parseSessions(List<dom.Element> sessionElements) {
+    List<Session> sessions = new List<Session>();
+
+    for(int i = 0; i < sessionElements.length;i++) {
+      dom.Element sessionElement = sessionElements[i];
+
+      var aElements = sessionElement.getElementsByTagName('a');
+
+      for(int j = 0; j < aElements.length;j++) {
+
+        dom.Element aElement = aElements[j];
+        Session session = new Session();
+        session.urlString = URL_PREFIX + aElement.attributes['href'];
+
+        session.sessionTitle = aElement.attributes['title'];
+
+        sessions.add(session);
+
+      }
+    }
+
+    return sessions;
+  }
+
+  List<Track> parseTracks(List<dom.Element> trackElements) {
+    List<Track> tracks = new List<Track>();
+
+    for(int i = 0; i < trackElements.length;i++) {
+      dom.Element trackElement = trackElements[i];
+      
+      var track_name = trackElement.getElementsByTagName('h1').first.text;
+      
+      List<Session> sessions = parseSessions(trackElement.getElementsByClassName('sessions'));
+
+      Track track = new Track();
+      track.trackName = track_name;
+      track.sessions = sessions;
+
+      tracks.add(track);
+    }
+    return tracks;
+  }
+
+
+  List<Conference> parseConferencesFromResponse(Response response) {
+
+    List<Conference> conferences = new List();
+
+    var document = parser.parse(response.data);
+
+    var conferenceElements = document.getElementsByClassName('conference');
+
+    for(int i = 0; i < conferenceElements.length;i++) {
+
+      dom.Element conferenceElement = conferenceElements[i];
+      var trackElements = conferenceElement.getElementsByClassName('track');
+      List<Track> tracks = parseTracks(trackElements);
+
+      var conferenceName = conferenceElement.getElementsByTagName('h1').first.text;
+      var conferenceLogoUrl = conferenceElement.getElementsByTagName('img').first.attributes['src'];
+      var conferenceShortDescription = conferenceElement.getElementsByTagName('h2').first.text;
+      var conferenceTime = conferenceElement.getElementsByTagName('time').first.attributes['content'];
+
+      Conference conference = new Conference();
+      conference.name = conferenceName;
+      conference.logoUrlString = URL_PREFIX + conferenceLogoUrl;
+      conference.shortDescription = conferenceShortDescription;
+      conference.tracks = tracks;
+      conference.time = conferenceTime;
+
+      conferences.add(conference);
+    }
+
+    return conferences;
+  }
+
+  void getConferences() async {
+    try {
+      Response response = await Dio().get(URL_PREFIX);
+      List<Conference> conferences = parseConferencesFromResponse(response);
+
+      setState(() {
+        _conferences = conferences;
+        hasData = true;
+      });
+
+    } catch(e) {
+      print(e);
+    }
+  }
+
+
+  Widget _buildRow(Conference conference) {
+//    Widget textSection = new Container(
+//      padding: const EdgeInsets.all(12.0),
+//      child: new Text(conference.name),
+//    );
+//    return textSection;
+
+      Widget textSection = new GestureDetector(
+        child: new Container(
+          margin: EdgeInsets.all(8.0),
+          child: new Row(
+            children: <Widget>[
+              new Expanded(
+                child: new Container(
+                  margin: EdgeInsets.only(left: 8.0),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Text(
+                        conference.name,
+                        style: new TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      new Text(
+                        conference.shortDescription,
+                        style: new TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 18,
+                        ),
+                      ),
+                      new Text(
+                        conference.time,
+                        style: new TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 18,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        onTap: () {print('This row was tapped');},
+      );
+      return textSection;
+  }
+
+
+  Widget _buildConferences() {
+    return new ListView.builder(
+        itemCount: _conferences.length,
+        itemBuilder: (context, i) {
+          return _buildRow(_conferences[i]);
+        },
+        padding: const EdgeInsets.all(16.0),
+    );
+  }
+
+
+  Widget _buildBlank() {
+    return new Center(
+      child: new Text('Hello World'),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    getConferences();
   }
 
   @override
@@ -65,47 +232,14 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+
+    return CupertinoPageScaffold(
+      navigationBar: new CupertinoNavigationBar(
+        middle: new Text('ASCIIWWDC'),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
+      child: new SafeArea(
+          child: hasData? _buildConferences():_buildBlank(),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
