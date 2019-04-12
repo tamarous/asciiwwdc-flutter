@@ -7,6 +7,7 @@ import 'package:html/dom.dart' as dom;
 import 'Conference.dart';
 import 'Track.dart';
 import 'Session.dart';
+import 'TracksSelectionPage.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,10 +15,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
+    return MaterialApp(
       title: 'ASCIIWWDC',
-      theme: new CupertinoThemeData(
-        primaryColor: Colors.blue,
+      theme: new ThemeData(
+        primaryColor: Colors.white,
       ),
       home: MyHomePage(title: 'ASCIIWWDC'),
     );
@@ -27,15 +28,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -43,19 +35,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 
-
-
 class _MyHomePageState extends State<MyHomePage> {
 
   List<Conference> _conferences;
 
-
   bool hasData = false;
 
   final String URL_PREFIX = 'https://www.asciiwwdc.com';
-
-
-
+  
   List<Session> parseSessions(List<dom.Element> sessionElements) {
     List<Session> sessions = new List<Session>();
 
@@ -69,11 +56,9 @@ class _MyHomePageState extends State<MyHomePage> {
         dom.Element aElement = aElements[j];
         Session session = new Session();
         session.urlString = URL_PREFIX + aElement.attributes['href'];
-
         session.sessionTitle = aElement.attributes['title'];
 
         sessions.add(session);
-
       }
     }
 
@@ -149,12 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
   Widget _buildRow(Conference conference) {
-//    Widget textSection = new Container(
-//      padding: const EdgeInsets.all(12.0),
-//      child: new Text(conference.name),
-//    );
-//    return textSection;
-
+    
       Widget textSection = new GestureDetector(
         child: new Container(
           margin: EdgeInsets.all(8.0),
@@ -194,12 +174,15 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        onTap: () {print('This row was tapped');},
+        onTap: () {
+          Navigator.push(context, new MaterialPageRoute(
+              builder: (context) => new TracksSelectionPage(tracks: conference.tracks,)
+          ),);
+        },
       );
       return textSection;
   }
-
-
+  
   Widget _buildConferences() {
     return new ListView.builder(
         itemCount: _conferences.length,
@@ -209,8 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.all(16.0),
     );
   }
-
-
+  
   Widget _buildBlank() {
     return new Center(
       child: new Text('Hello World'),
@@ -226,20 +208,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
 
-    return CupertinoPageScaffold(
-      navigationBar: new CupertinoNavigationBar(
-        middle: new Text('ASCIIWWDC'),
+    return Scaffold(
+      appBar: new AppBar(
+        title: new Text('ASCIIWWDC-Flutter'),
+        actions: <Widget>[
+          new IconButton(icon: new Icon(Icons.search), onPressed: null),
+        ],
       ),
-      child: new SafeArea(
-          child: hasData? _buildConferences():_buildBlank(),
-      ),
+      body: new SafeArea(child: hasData? _buildConferences():_buildBlank()),
     );
   }
 }
+
+
