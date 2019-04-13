@@ -8,6 +8,7 @@ import 'Conference.dart';
 import 'Track.dart';
 import 'Session.dart';
 import 'TracksSelectionPage.dart';
+import 'TracksSearchPage.dart';
 
 void main() => runApp(MyApp());
 
@@ -184,7 +185,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   
   Widget _buildConferences() {
-    return new ListView.builder(
+    return new ListView.separated(
+        separatorBuilder: (BuildContext context, int index) => new Divider(),
         itemCount: _conferences.length,
         itemBuilder: (context, i) {
           return _buildRow(_conferences[i]);
@@ -213,7 +215,9 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: new AppBar(
         title: new Text('ASCIIWWDC-Flutter'),
         actions: <Widget>[
-          new IconButton(icon: new Icon(Icons.search), onPressed: null),
+          new IconButton(icon: new Icon(Icons.search), onPressed: () {
+            Navigator.push(context, new MaterialPageRoute(builder: (context) => new TracksSearchPage(conferences: hasData?_conferences:new List<String>())));
+          }),
         ],
       ),
       body: new SafeArea(child: hasData? _buildConferences():_buildBlank()),
