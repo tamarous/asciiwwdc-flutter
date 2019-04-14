@@ -6,7 +6,7 @@ import 'Track.dart';
 
 class TracksSearchPage extends StatefulWidget {
 
-  List<Conference> conferences;
+  final List<Conference> conferences;
 
   TracksSearchPage({Key key, @required this.conferences}):super(key: key);
 
@@ -20,7 +20,6 @@ class _TracksSearchState extends State<TracksSearchPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
 
     super.initState();
 
@@ -48,7 +47,7 @@ class _TracksSearchState extends State<TracksSearchPage> {
   
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    
     return new Scaffold(
       body: new MaterialSearch(
         placeholder: 'Search',

@@ -4,7 +4,7 @@ import 'Session.dart';
 import 'package:asciiwwdc/TrackDetailPage.dart';
 
 class TracksSelectionPage extends StatefulWidget {
-  List<Track> tracks;
+  final List<Track> tracks;
 
   TracksSelectionPage({Key key, @required this.tracks}):super(key:key);
 
@@ -42,7 +42,7 @@ class _TracksSelectionState extends State<TracksSelectionPage>{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    
     return Scaffold(
 
       appBar: AppBar(

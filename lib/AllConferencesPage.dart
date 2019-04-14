@@ -50,12 +50,12 @@ class AllConferencesState extends State<AllConferencesPage> {
     for(int i = 0; i < trackElements.length;i++) {
       dom.Element trackElement = trackElements[i];
 
-      var track_name = trackElement.getElementsByTagName('h1').first.text;
+      var trackName = trackElement.getElementsByTagName('h1').first.text;
 
       List<Session> sessions = parseSessions(trackElement.getElementsByClassName('sessions'));
 
       Track track = new Track();
-      track.trackName = track_name;
+      track.trackName = trackName;
       track.sessions = sessions;
 
       tracks.add(track);

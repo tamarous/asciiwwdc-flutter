@@ -4,7 +4,7 @@ import 'Session.dart';
 
 class TrackDetailPage extends StatefulWidget {
 
-  Session session;
+  final Session session;
 
   TrackDetailPage({Key key, @required this.session}):super(key:key);
 
@@ -16,13 +16,21 @@ class _TrackDetailState extends State<TrackDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    
     return new WebviewScaffold(
         url: widget.session.urlString,
         appBar: AppBar(
           title: Text(
             widget.session.sessionTitle,
           ),
+          actions: <Widget>[
+            IconButton(
+              icon:Icon(Icons.favorite),
+              onPressed: () {
+                print('Favorite this track');
+              },  
+            ) 
+          ],
         ),
         withZoom: true,
         withLocalStorage: true,
