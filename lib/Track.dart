@@ -1,18 +1,17 @@
 import 'Session.dart';
 import 'package:sqflite/sqflite.dart';
 
-
 final String tableTrack = 'track';
 final String columnTrackId = 'trackId';
 final String columnTrackName = 'trackName';
-
-
 
 class Track {
   int trackId;
   String trackName;
   List<Session> sessions;
 
+
+  Track() {}
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{

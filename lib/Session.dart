@@ -8,13 +8,16 @@ final String columnUrlString = 'sessionUrlString';
 
 class Session {
   int sessionId;
-  String title;
-  String urlString;
+  String sessionTitle;
+  String sessionUrlString;
+  bool isFavorite = false;
+
+  Session() {}
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic> {
-      columnTitle:title,
-      columnUrlString:urlString,
+      columnTitle:sessionTitle,
+      columnUrlString:sessionUrlString,
     };
     if (sessionId != null) {
       map[columnId] = sessionId;
@@ -22,11 +25,10 @@ class Session {
     return map;
   }
 
-
   Session.fromMap(Map<String, dynamic> map) {
     sessionId = map[columnId];
-    title = map[columnTitle];
-    urlString = map[columnUrlString];
+    sessionTitle = map[columnTitle];
+    sessionUrlString = map[columnUrlString];
   }
 }
 

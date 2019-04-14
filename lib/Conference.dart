@@ -17,6 +17,8 @@ class Conference {
   String conferenceTime;
   List<Track> tracks;
 
+  Conference() {}
+
   Map<String, dynamic> toMap() {
     var map = <String, dynamic> {
       columnName:conferenceName,

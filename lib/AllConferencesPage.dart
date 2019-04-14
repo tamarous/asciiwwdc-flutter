@@ -34,7 +34,7 @@ class AllConferencesState extends State<AllConferencesPage> {
 
         dom.Element aElement = aElements[j];
         Session session = new Session();
-        session.urlString = URL_PREFIX + aElement.attributes['href'];
+        session.sessionUrlString = URL_PREFIX + aElement.attributes['href'];
         session.sessionTitle = aElement.attributes['title'];
 
         sessions.add(session);
@@ -84,11 +84,11 @@ class AllConferencesState extends State<AllConferencesPage> {
       var conferenceTime = conferenceElement.getElementsByTagName('time').first.attributes['content'];
 
       Conference conference = new Conference();
-      conference.name = conferenceName;
-      conference.logoUrlString = URL_PREFIX + conferenceLogoUrl;
-      conference.shortDescription = conferenceShortDescription;
+      conference.conferenceName = conferenceName;
+      conference.conferenceLogoUrl = URL_PREFIX + conferenceLogoUrl;
+      conference.conferenceShortDescription = conferenceShortDescription;
       conference.tracks = tracks;
-      conference.time = conferenceTime;
+      conference.conferenceTime = conferenceTime;
 
       conferences.add(conference);
     }
@@ -126,21 +126,21 @@ class AllConferencesState extends State<AllConferencesPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     new Text(
-                      conference.name,
+                      conference.conferenceName,
                       style: new TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
                       ),
                     ),
                     new Text(
-                      conference.shortDescription,
+                      conference.conferenceShortDescription,
                       style: new TextStyle(
                         fontWeight: FontWeight.normal,
                         fontSize: 18,
                       ),
                     ),
                     new Text(
-                      conference.time,
+                      conference.conferenceTime,
                       style: new TextStyle(
                         fontWeight: FontWeight.normal,
                         fontSize: 18,
