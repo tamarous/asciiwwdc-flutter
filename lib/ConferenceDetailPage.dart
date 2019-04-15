@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Track.dart';
 import 'Session.dart';
-import 'package:asciiwwdc/TrackDetailPage.dart';
+import 'package:asciiwwdc/SessionDetailPage.dart';
 
 class ConferenceDetailPage extends StatefulWidget {
   final List<Track> tracks;
