@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'Session.dart';
 
-class TrackDetailPage extends StatefulWidget {
+class SessionDetailPage extends StatefulWidget {
 
   final Session session;
 
-  TrackDetailPage({Key key, @required this.session}):super(key:key);
+  SessionDetailPage({Key key, @required this.session}):super(key:key);
 
   @override
-  _TrackDetailState createState() => new _TrackDetailState();
+  _SessionDetailState createState() => new _SessionDetailState();
 }
 
-class _TrackDetailState extends State<TrackDetailPage> {
+class _SessionDetailState extends State<SessionDetailPage> {
 
   @override
   Widget build(BuildContext context) {

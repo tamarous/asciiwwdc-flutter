@@ -3,16 +3,16 @@ import 'Track.dart';
 import 'Session.dart';
 import 'package:asciiwwdc/TrackDetailPage.dart';
 
-class TracksSelectionPage extends StatefulWidget {
+class ConferenceDetailPage extends StatefulWidget {
   final List<Track> tracks;
 
-  TracksSelectionPage({Key key, @required this.tracks}):super(key:key);
+  ConferenceDetailPage({Key key, @required this.tracks}):super(key:key);
 
   @override
-  _TracksSelectionState createState() => new _TracksSelectionState();
+  _ConferenceDetailState createState() => new _ConferenceDetailState();
 }
 
-class _TracksSelectionState extends State<TracksSelectionPage>{
+class _ConferenceDetailState extends State<ConferenceDetailPage>{
 
   Widget _buildRow(Session session) {
     return new GestureDetector(
@@ -26,7 +26,7 @@ class _TracksSelectionState extends State<TracksSelectionPage>{
         ),
       ),
       onTap: () {
-        Navigator.push(context, new MaterialPageRoute(builder: (context) => new TrackDetailPage(session: session,)),);
+        Navigator.push(context, new MaterialPageRoute(builder: (context) => new SessionDetailPage(session: session,)),);
       },
     );
   }

@@ -4,17 +4,17 @@ import 'Conference.dart';
 import 'Session.dart';
 import 'Track.dart';
 
-class TracksSearchPage extends StatefulWidget {
+class SearchPage extends StatefulWidget {
 
   final List<Conference> conferences;
 
-  TracksSearchPage({Key key, @required this.conferences}):super(key: key);
+  SearchPage({Key key, @required this.conferences}):super(key: key);
 
   @override
-  _TracksSearchState createState() => new _TracksSearchState();
+  _SearchState createState() => new _SearchState();
 }
 
-class _TracksSearchState extends State<TracksSearchPage> {
+class _SearchState extends State<SearchPage> {
 
   List<String> _sessionTitles = [];
 

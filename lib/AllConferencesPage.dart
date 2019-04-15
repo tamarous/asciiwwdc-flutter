@@ -3,8 +3,8 @@ import 'package:dio/dio.dart';
 import 'Conference.dart';
 import 'Session.dart';
 import 'Track.dart';
-import 'TracksSearchPage.dart';
-import 'TracksSelectionPage.dart';
+import 'SearchPage.dart';
+import 'ConferenceDetailPage.dart';
 
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
@@ -155,7 +155,7 @@ class AllConferencesState extends State<AllConferencesPage> {
       ),
       onTap: () {
         Navigator.push(context, new MaterialPageRoute(
-            builder: (context) => new TracksSelectionPage(tracks: conference.tracks,)
+            builder: (context) => new ConferenceDetailPage(tracks: conference.tracks,)
         ),);
       },
     );
@@ -194,7 +194,7 @@ class AllConferencesState extends State<AllConferencesPage> {
         title: new Text('ASCIIWWDC-Flutter'),
         actions: <Widget>[
           new IconButton(icon: new Icon(Icons.search), onPressed: () {
-            Navigator.push(context, new MaterialPageRoute(builder: (context) => new TracksSearchPage(conferences: hasData?_conferences:new List<String>())));
+            Navigator.push(context, new MaterialPageRoute(builder: (context) => new SearchPage(conferences: hasData?_conferences:new List<String>())));
           }),
         ],
       ),
