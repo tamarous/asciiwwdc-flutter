@@ -20,7 +20,7 @@ class AllConferencesState extends State<AllConferencesPage> {
 
   bool hasData = false;
 
-  final String URL_PREFIX = 'https://www.asciiwwdc.com';
+  static const String URL_PREFIX = 'https://www.asciiwwdc.com';
 
   List<Session> parseSessions(List<dom.Element> sessionElements) {
     List<Session> sessions = new List<Session>();
@@ -64,7 +64,7 @@ class AllConferencesState extends State<AllConferencesPage> {
   }
 
 
-  List<Conference> parseConferencesFromResponse(Response response) {
+  Future<List<Conference>> parseConferencesFromResponse(Response response) async {
 
     List<Conference> conferences = new List();
 
@@ -90,22 +90,31 @@ class AllConferencesState extends State<AllConferencesPage> {
       conference.tracks = tracks;
       conference.conferenceTime = conferenceTime;
 
+      //conference = await ConferenceProvider.instance.insert(conference);
+
       conferences.add(conference);
     }
 
     return conferences;
   }
 
+  void saveAllConferences() async{
+    for (int i = 0; i < _conferences.length; i++) {
+      ConferenceProvider.instance.insert(_conferences[i]);
+    }
+  }
+
   void getConferences() async {
     try {
       Response response = await Dio().get(URL_PREFIX);
-      List<Conference> conferences = parseConferencesFromResponse(response);
+      List<Conference> conferences = await parseConferencesFromResponse(response);
 
       setState(() {
         _conferences = conferences;
         hasData = true;
       });
 
+      saveAllConferences();
     } catch(e) {
       print(e);
     }

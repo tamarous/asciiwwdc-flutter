@@ -4,10 +4,12 @@ import 'DataManager.dart';
 final String tableTrack = 'track';
 final String columnTrackId = 'trackId';
 final String columnTrackName = 'trackName';
+final String columnConferenceId = 'conferenceId';
 
 class Track {
   int trackId;
   String trackName;
+  int conferenceId;
   List<Session> sessions;
 
 
@@ -20,12 +22,17 @@ class Track {
     if (trackId != null) {
       map[columnTrackId] = trackId;
     }
+    if (conferenceId != null) {
+      map[columnConferenceId] = conferenceId;
+    }
+
     return map;
   }
 
   Track.fromMap(Map<String, dynamic> map) {
     trackName = map[columnTrackName];
     trackId = map[columnTrackId];
+    conferenceId = map[columnConferenceId];
   }
 
 
@@ -46,7 +53,7 @@ class TrackProvider {
     return _instance;
   }
 
-  TrackProvider get instance => _getInstance();
+  static TrackProvider get instance => _getInstance();
 
   Database db;
   Future open() async {
@@ -58,6 +65,7 @@ class TrackProvider {
         create table $tableTrack (
           $columnTrackId integer primary key autoincrement, 
           $columnTrackName text not null,
+          $columnConferenceId integer not null
         )
       ''');
     });
@@ -70,6 +78,11 @@ class TrackProvider {
 
     track.trackId = await db.insert(tableTrack, track.toMap());
 
+    for(int i = 0; i < track.sessions.length;i++) {
+      track.sessions[i].trackId = track.trackId;
+      await SessionProvider.instance.insert(track.sessions[i]);
+    }
+
     close();
     return track;
   }
@@ -81,7 +94,7 @@ class TrackProvider {
 
     List<Map> maps = await db.query(
       tableTrack,
-      columns: [columnTrackId, columnTrackName],
+      columns: [columnTrackId, columnTrackName, columnConferenceId],
       where: '$columnTrackId = ?',
       whereArgs: [trackId]
     );

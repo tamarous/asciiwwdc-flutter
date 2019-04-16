@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'AllConferencesPage.dart';
-import 'FavoriteTracksPage.dart';
 
 void main() => runApp(MyApp());
 

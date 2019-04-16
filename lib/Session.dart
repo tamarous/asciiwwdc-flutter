@@ -7,6 +7,7 @@ final String columnId = 'sessionId';
 final String columnTitle = 'sessionTitle';
 final String columnUrlString = 'sessionUrlString';
 final String columnFavorite = 'sessionIsFavorite';
+final String columnTrackId = 'trackId';
 
 class Session {
 
@@ -14,6 +15,7 @@ class Session {
   String sessionTitle;
   String sessionUrlString;
   bool _isFavorite = false;
+  int trackId;
 
   Session() ;
 
@@ -26,6 +28,9 @@ class Session {
     if (sessionId != null) {
       map[columnId] = sessionId;
     }
+    if (trackId != null) {
+      map[columnTrackId] = trackId;
+    }
     return map;
   }
 
@@ -34,6 +39,7 @@ class Session {
     sessionTitle = map[columnTitle];
     sessionUrlString = map[columnUrlString];
     _isFavorite = map[columnFavorite]==1;
+    trackId = map[columnTrackId];
   }
 
   set favorite(bool favorite) {
@@ -66,6 +72,7 @@ class SessionProvider {
   factory SessionProvider() => _getInstance();
 
   static SessionProvider _instance;
+
   static SessionProvider get instance => _getInstance();
 
   SessionProvider._internal() ;
@@ -89,7 +96,8 @@ class SessionProvider {
           $columnId integer primary key autoincrement,
           $columnTitle text not null,
           $columnUrlString text not null,
-          $columnFavorite integer not null
+          $columnFavorite integer not null,
+          $columnTrackId integer not null
         )
       ''');
     });
@@ -104,6 +112,7 @@ class SessionProvider {
     session.sessionId = await db.insert(tableSession, session.toMap());
 
     close();
+
     return session;
   }
 

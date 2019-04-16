@@ -4,7 +4,7 @@ import 'Session.dart';
 
 class SessionDetailPage extends StatefulWidget {
 
-  Session session;
+  final Session session;
 
   SessionDetailPage({Key key, @required this.session}):super(key:key);
 
@@ -32,7 +32,6 @@ class _SessionDetailState extends State<SessionDetailPage> {
       setState(() {
         ifFavorite = widget.session.isFavorite;
       });
-
     }
 
     return new WebviewScaffold(

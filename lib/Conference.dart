@@ -10,8 +10,6 @@ final String columnShortDescription = 'conferenceShortDescription';
 final String columnLogoUrl = 'conferenceLogoUrl';
 final String columnTime = 'conferenceTime';
 
-
-
 class Conference {
   int conferenceId;
   String conferenceName;
@@ -45,7 +43,24 @@ class Conference {
 }
 
 class ConferenceProvider {
+
+
+  static ConferenceProvider _instance;
+
+  static ConferenceProvider get instance => _getInstance();
+
+  ConferenceProvider._internal();
+
+  static ConferenceProvider _getInstance() {
+    if (_instance == null) {
+      _instance = ConferenceProvider._internal();
+    }
+    return _instance;
+  }
+
   Database db;
+
+
   Future open() async{
 
     String path = await DataManager.instance.databaseFullPath;
@@ -57,7 +72,7 @@ class ConferenceProvider {
           $columnName text not null,
           $columnLogoUrl text not null,
           $columnShortDescription text not null,
-          $columnTime text not null,
+          $columnTime text not null
         )
       ''');
     });
@@ -70,6 +85,12 @@ class ConferenceProvider {
     }
 
     conference.conferenceId = await db.insert(tableConference, conference.toMap());
+
+    for(int i = 0; i < conference.tracks.length;i++) {
+      conference.tracks[i].conferenceId = conference.conferenceId;
+
+      await TrackProvider.instance.insert(conference.tracks[i]);
+    }
 
     close();
 
