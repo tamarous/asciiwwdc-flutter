@@ -31,10 +31,8 @@ class _SearchState extends State<SearchPage> {
 
       for(int j = 0; j < conference.tracks.length;j++) {
         Track track = conference.tracks[j];
-
         for(int k = 0; k < track.sessions.length;k++) {
-          Session session = track.sessions[k];
-          sessions.add(session);
+          sessions.add(track.sessions[k]);
         }
       }
     }
@@ -44,11 +42,6 @@ class _SearchState extends State<SearchPage> {
     });
   }
 
-
-  List<String> _fetchList(String queryString){
-    return _sessions.where((session)=>session.sessionTitle.toLowerCase().trim().contains(queryString.toLowerCase().trim())).map((session)=>session.sessionTitle).toList();
-  }
-  
   @override
   Widget build(BuildContext context) {
     
