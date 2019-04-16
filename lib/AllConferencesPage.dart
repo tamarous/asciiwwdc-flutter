@@ -5,7 +5,7 @@ import 'Session.dart';
 import 'Track.dart';
 import 'SearchPage.dart';
 import 'ConferenceDetailPage.dart';
-
+import 'FavoriteTracksPage.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
 
@@ -110,47 +110,68 @@ class AllConferencesState extends State<AllConferencesPage> {
       print(e);
     }
   }
-
-
-  Widget _buildRow(Conference conference) {
-
-    Widget textSection = new GestureDetector(
-      child: new Container(
-        margin: EdgeInsets.all(8.0),
-        child: new Row(
-          children: <Widget>[
-            new Expanded(
-              child: new Container(
-                margin: EdgeInsets.only(left: 8.0),
-                child: new Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Text(
-                      conference.conferenceName,
-                      style: new TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+  //Color.fromRGBO(9, 97, 72, 1.0)
+  Widget _buildCard(Conference conference) {
+    Widget card = GestureDetector(
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 8.0,
+        margin: EdgeInsets.symmetric(horizontal: 4.0, vertical:8.0),
+        child: Container(
+          decoration: BoxDecoration(color: Color.fromRGBO(252, 250, 242, 1.0)),
+          child: new Row(
+            children: <Widget>[
+              new Expanded(
+                child: new Container(
+                  margin: EdgeInsets.only(left: 6.0),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Padding(
+                        padding: EdgeInsets.symmetric(vertical:12.0,horizontal: 6.0),
+                        child: Center(
+                          child: new Text(
+                            conference.conferenceName,
+                            style: new TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                              color: Color.fromRGBO(67, 67, 67, 1.0),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    new Text(
-                      conference.conferenceShortDescription,
-                      style: new TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 18,
+                      new Padding(
+                        padding: EdgeInsets.symmetric(vertical:12.0,horizontal: 6.0),
+                        child: Center(
+                          child: new Text(
+                            conference.conferenceShortDescription,
+                            style: new TextStyle(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 18,
+                              color: Color.fromRGBO(130, 130, 130, 1.0),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    new Text(
-                      conference.conferenceTime,
-                      style: new TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 18,
+                      new Padding(
+                          padding: EdgeInsets.symmetric(vertical:12.0,horizontal: 6.0),
+                          child: Center(
+                            child: new Text(
+                              conference.conferenceTime,
+                              style: new TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 18,
+                                color: Color.fromRGBO(130, 130, 130, 1.0),
+                              ),
+                            ),
+                          ),
                       ),
-                    )
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
       onTap: () {
@@ -158,24 +179,26 @@ class AllConferencesState extends State<AllConferencesPage> {
             builder: (context) => new ConferenceDetailPage(tracks: conference.tracks,)
         ),);
       },
+
     );
-    return textSection;
+
+    return card;
   }
 
   Widget _buildConferences() {
-    return new ListView.separated(
-      separatorBuilder: (BuildContext context, int index) => new Divider(),
+    return new ListView.builder(
+      shrinkWrap: true,
       itemCount: _conferences.length,
       itemBuilder: (context, i) {
-        return _buildRow(_conferences[i]);
+        return _buildCard(_conferences[i]);
       },
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(12.0),
     );
   }
 
   Widget _buildBlank() {
-    return new Center(
-      child: new Text('Hello World'),
+    return Center(
+      child: CircularProgressIndicator(),
     );
   }
 
@@ -190,11 +213,24 @@ class AllConferencesState extends State<AllConferencesPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: new AppBar(
         title: new Text('ASCIIWWDC-Flutter'),
         actions: <Widget>[
-          new IconButton(icon: new Icon(Icons.search), onPressed: () {
-            Navigator.push(context, new MaterialPageRoute(builder: (context) => new SearchPage(conferences: hasData?_conferences:new List<String>())));
+          new IconButton(
+            icon: new Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(context, new MaterialPageRoute(
+                  builder: (context) => new SearchPage(conferences: hasData?_conferences:new List<String>())
+              ));
+            }
+          ),
+          new IconButton(
+            icon: new Icon(Icons.favorite_border),
+            onPressed: (){
+              Navigator.push(context, new MaterialPageRoute(
+                  builder: (context) => FavoriteTracksPage()
+              ));
           }),
         ],
       ),

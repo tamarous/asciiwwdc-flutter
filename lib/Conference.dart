@@ -1,5 +1,7 @@
 import 'Track.dart';
 import 'package:sqflite/sqflite.dart';
+import 'DataManager.dart';
+
 
 final String tableConference = 'conference';
 final String columnId = 'conferenceId';
@@ -7,6 +9,7 @@ final String columnName = 'conferenceName';
 final String columnShortDescription = 'conferenceShortDescription';
 final String columnLogoUrl = 'conferenceLogoUrl';
 final String columnTime = 'conferenceTime';
+
 
 
 class Conference {
@@ -17,7 +20,7 @@ class Conference {
   String conferenceTime;
   List<Track> tracks;
 
-  Conference() {}
+  Conference() ;
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic> {
@@ -43,27 +46,41 @@ class Conference {
 
 class ConferenceProvider {
   Database db;
-  Future open(String path) async{
+  Future open() async{
+
+    String path = await DataManager.instance.databaseFullPath;
+
     db = await openDatabase(path, version:1, onCreate: (Database db, int version) async {
       await db.execute('''
-        create table $tableConference {
+        create table $tableConference (
           $columnId integer primary key autoincrement,
           $columnName text not null,
           $columnLogoUrl text not null,
           $columnShortDescription text not null,
           $columnTime text not null,
-        }
+        )
       ''');
     });
     return db;
   }
 
   Future<Conference> insert(Conference conference) async {
+    if (db == null || !db.isOpen) {
+      await open();
+    }
+
     conference.conferenceId = await db.insert(tableConference, conference.toMap());
+
+    close();
+
     return conference;
   }
 
   Future<Conference> getConference(int conferenceId) async {
+    if (db == null || !db.isOpen) {
+      await open();
+    }
+
     List<Map> maps = await db.query(
       tableConference,
       columns: [columnId,columnName,columnLogoUrl,columnShortDescription,columnTime],
@@ -74,14 +91,37 @@ class ConferenceProvider {
     if (maps.length > 0) {
       return Conference.fromMap(maps.first);
     }
+
+    close();
     return null;
   }
 
   Future<int> delete(int conferenceId) async {
-    return await db.delete(tableConference, where: '$columnId = ?', whereArgs: [conferenceId]);
+    if (db == null || !db.isOpen) {
+      await open();
+    }
+
+    int result = await db.delete(tableConference, where: '$columnId = ?', whereArgs: [conferenceId]);
+
+    close();
+
+    return result;
   }
 
   Future<int> update(Conference conference) async {
-    return await db.update(tableConference, conference.toMap(), where:'$columnId = ?', whereArgs: [conference.conferenceId]);
+    if (!db.isOpen) {
+      await open();
+    }
+    int result = await db.update(tableConference, conference.toMap(), where:'$columnId = ?', whereArgs: [conference.conferenceId]);
+
+    close();
+
+    return result;
+  }
+
+  Future close() async {
+    if (db.isOpen) {
+      await db.close();
+    }
   }
 }

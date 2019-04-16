@@ -3,6 +3,7 @@ import 'package:material_search/material_search.dart';
 import 'Conference.dart';
 import 'Session.dart';
 import 'Track.dart';
+import 'SessionDetailPage.dart';
 
 class SearchPage extends StatefulWidget {
 
@@ -16,12 +17,14 @@ class SearchPage extends StatefulWidget {
 
 class _SearchState extends State<SearchPage> {
 
-  List<String> _sessionTitles = [];
+  List<Session> _sessions;
 
   @override
   void initState() {
 
     super.initState();
+
+    List<Session> sessions = [];
 
     for(int i = 0; i < widget.conferences.length;i++) {
       Conference conference = widget.conferences[i];
@@ -31,41 +34,44 @@ class _SearchState extends State<SearchPage> {
 
         for(int k = 0; k < track.sessions.length;k++) {
           Session session = track.sessions[k];
-
-          _sessionTitles.add(session.sessionTitle);
+          sessions.add(session);
         }
       }
     }
 
+    setState(() {
+      _sessions = sessions;
+    });
   }
 
 
   List<String> _fetchList(String queryString){
-    
-    return _sessionTitles.where((title) => title.contains(queryString));
+    return _sessions.where((session)=>session.sessionTitle.toLowerCase().trim().contains(queryString.toLowerCase().trim())).map((session)=>session.sessionTitle).toList();
   }
   
   @override
   Widget build(BuildContext context) {
     
     return new Scaffold(
-      body: new MaterialSearch(
+      body: MaterialSearch(
+        limit: 30,
         placeholder: 'Search',
-        getResults: (String queryString) async {
-          List<String> _list = _fetchList(queryString);
-          return _list.map((trackName) => new MaterialSearchResult<String>(
-            value:trackName,
-            text: trackName,
-          )).toList();
+        results: _sessions.map((Session session) => new MaterialSearchResult<Session>(
+          value: session,
+          text: session.sessionTitle,
+        )).toList(),
+        filter: (dynamic value, String query) {
+          return (value as Session).sessionTitle.toLowerCase().trim().contains(query.toLowerCase().trim());
         },
-        onSelect: (String selected) {
-
+        onSelect: (dynamic value) {
+          Navigator.push(context, new MaterialPageRoute(
+              builder: (context) => new SessionDetailPage(session: value as Session),
+          ));
         },
-        onSubmit: (String toSubmit) {
+        onSubmit: (String submitted) {
 
         },
       ),
     );
   }
-
 }

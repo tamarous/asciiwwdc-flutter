@@ -4,36 +4,52 @@ import 'dart:io';
 import 'package:path/path.dart';
 class DataManager {
 
+
+    factory DataManager() => _getInstance();
+    static DataManager _instance;
+
+    static DataManager get instance => _getInstance();
+
+    DataManager._internal() {
+      this._databaseName = 'sessions.db';
+    }
+
+    static DataManager _getInstance() {
+      if (_instance == null) {
+        _instance = new DataManager._internal();
+      }
+
+      return _instance;
+    }
+
     String _databaseName;
-    String databaseFullPath;
+    String _databaseFullPath;
 
-    DataManager(this._databaseName);
+    Future<String> get databaseFullPath async {
 
-    Future<String> get getDatabaseFullPath async{
-
-      if (databaseFullPath != null) {
-        return databaseFullPath;
+      if (_databaseFullPath != null) {
+        return _databaseFullPath;
       }
 
       if (_databaseName == null) {
-        _databaseName = 'tracks.db';
+        _databaseName = 'sessions.db';
       }
 
       var databasePath = await getDatabasesPath();
-      databaseFullPath = join(databasePath, _databaseName);
+      _databaseFullPath = join(databasePath, _databaseName);
 
-      if (await Directory(dirname(databaseFullPath)).exists()) {
+      if (await Directory(dirname(_databaseFullPath)).exists()) {
 
       } else {
         try {
-          await Directory(dirname(databaseFullPath)).create();
+          await Directory(dirname(_databaseFullPath)).create();
         } catch (e) {
-          databaseFullPath = null;
+          _databaseFullPath = null;
           print(e);
         }
       }
 
-      return databaseFullPath;
+      return _databaseFullPath;
       
     }
 

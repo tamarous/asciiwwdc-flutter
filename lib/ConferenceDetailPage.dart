@@ -14,15 +14,31 @@ class ConferenceDetailPage extends StatefulWidget {
 
 class _ConferenceDetailState extends State<ConferenceDetailPage>{
 
+
   Widget _buildRow(Session session) {
-    return new GestureDetector(
-      child:new ListTile(
-        title: new Text(
-          session.sessionTitle,
-          style: TextStyle(
-            fontSize: 18.0,
-            fontWeight: FontWeight.normal,
-          ),
+    return GestureDetector(
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(
+                  session.sessionTitle,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ),
+            ),
+//            IconButton(
+//              icon: session.isFavorite?Icon(Icons.favorite):Icon(Icons.favorite_border),
+//              onPressed: () => session.toggleFavorite(),
+//              iconSize: 20,
+//            ),
+          ],
         ),
       ),
       onTap: () {

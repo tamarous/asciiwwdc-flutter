@@ -4,7 +4,7 @@ import 'Session.dart';
 
 class SessionDetailPage extends StatefulWidget {
 
-  final Session session;
+  Session session;
 
   SessionDetailPage({Key key, @required this.session}):super(key:key);
 
@@ -14,16 +14,25 @@ class SessionDetailPage extends StatefulWidget {
 
 class _SessionDetailState extends State<SessionDetailPage> {
 
+  bool ifFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    ifFavorite = widget.session.isFavorite;
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    bool ifFavorite = widget.session.isFavorite;
+    void toggleFavorite() async {
 
-    void toggleFavorite() {
-      widget.session.isFavorite = !widget.session.isFavorite;
+      widget.session.toggleFavorite();
+
       setState(() {
         ifFavorite = widget.session.isFavorite;
       });
+
     }
 
     return new WebviewScaffold(
@@ -39,7 +48,7 @@ class _SessionDetailState extends State<SessionDetailPage> {
             ) 
           ],
         ),
-        withZoom: true,
+        withZoom: false,
         withLocalStorage: true,
     );
   }
