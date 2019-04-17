@@ -5,7 +5,7 @@ import 'Session.dart';
 import 'Track.dart';
 import 'SearchPage.dart';
 import 'ConferenceDetailPage.dart';
-import 'FavoriteTracksPage.dart';
+import 'FavoriteSessionsPage.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
 
@@ -90,8 +90,6 @@ class AllConferencesState extends State<AllConferencesPage> {
       conference.tracks = tracks;
       conference.conferenceTime = conferenceTime;
 
-      //conference = await ConferenceProvider.instance.insert(conference);
-
       conferences.add(conference);
     }
 
@@ -100,8 +98,10 @@ class AllConferencesState extends State<AllConferencesPage> {
 
   void saveAllConferences() async{
     for (int i = 0; i < _conferences.length; i++) {
-      ConferenceProvider.instance.insert(_conferences[i]);
+      await ConferenceProvider.instance.insert(_conferences[i]);
     }
+
+    await ConferenceProvider.instance.close();
   }
 
   void getConferences() async {
@@ -115,6 +115,7 @@ class AllConferencesState extends State<AllConferencesPage> {
       });
 
       saveAllConferences();
+
     } catch(e) {
       print(e);
     }
@@ -238,7 +239,7 @@ class AllConferencesState extends State<AllConferencesPage> {
             icon: new Icon(Icons.favorite_border),
             onPressed: (){
               Navigator.push(context, new MaterialPageRoute(
-                  builder: (context) => FavoriteTracksPage()
+                  builder: (context) => FavoriteSessionssPage()
               ));
           }),
         ],

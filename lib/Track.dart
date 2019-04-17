@@ -58,7 +58,7 @@ class TrackProvider {
   Database db;
   Future open() async {
 
-    String path = await DataManager.instance.databaseFullPath;
+    String path = await DataManager.instance.databaseForTracksFullPath;
 
     db = await openDatabase(path, version:1, onCreate: (Database db, int version) async {
       await db.execute('''
@@ -83,7 +83,8 @@ class TrackProvider {
       await SessionProvider.instance.insert(track.sessions[i]);
     }
 
-    close();
+    await SessionProvider.instance.close();
+
     return track;
   }
 
@@ -98,11 +99,12 @@ class TrackProvider {
       where: '$columnTrackId = ?',
       whereArgs: [trackId]
     );
+
+
     if (maps.length > 0) {
       return Track.fromMap(maps.first);
     }
 
-    close();
     return null;
   }
 
@@ -111,8 +113,6 @@ class TrackProvider {
       await open();
     }
     int result = await db.delete(tableTrack,where: '$columnTrackId = ?',whereArgs: [trackId]);
-
-    close();
 
     return result;
   }
@@ -123,11 +123,12 @@ class TrackProvider {
     }
 
     int result = await db.update(tableTrack, track.toMap(),where: '$columnTrackId = ?',whereArgs: [track.trackId]);
+
     return result;
   }
 
   Future close() async {
-    if (db.isOpen) {
+    if (db != null && db.isOpen) {
       await db.close();
     }
   }

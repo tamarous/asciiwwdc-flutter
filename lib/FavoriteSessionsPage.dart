@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'SessionDetailPage.dart';
 import 'Session.dart';
 
-class FavoriteTracksPage extends StatefulWidget {
+class FavoriteSessionssPage extends StatefulWidget {
 
   @override
-  _FavoriteTracksState createState() => new _FavoriteTracksState();
+  _FavoriteSessionsState createState() => new _FavoriteSessionsState();
 
 }
 
-class _FavoriteTracksState extends State<FavoriteTracksPage> {
+class _FavoriteSessionsState extends State<FavoriteSessionssPage> {
 
 
   List<Session> _favoriteSessions;
+
+  bool _hasData = false;
 
   void _fetchFavoriteSessionsList() async {
     var sql = 'sessionIsFavorite = 1';
@@ -21,6 +23,8 @@ class _FavoriteTracksState extends State<FavoriteTracksPage> {
 
     setState(() {
       _favoriteSessions = favoriteSessions;
+
+      _hasData = true;
     });
   }
 
@@ -56,6 +60,18 @@ class _FavoriteTracksState extends State<FavoriteTracksPage> {
     );
   }
 
+  Widget _buildBlank() {
+    return Center(
+      child: Text(
+        'None',
+        style: TextStyle(
+          fontWeight: FontWeight.normal,
+          fontSize: 18.0,
+        ),
+      ),
+    );
+  }
+
 
   @override
   void initState() {
@@ -71,7 +87,9 @@ class _FavoriteTracksState extends State<FavoriteTracksPage> {
       appBar: AppBar(
         title: Text('Favorite Tracks'),
       ),
-      body: SafeArea(child: _buildSessionLists()),
+      body: SafeArea(
+          child: _hasData?_buildSessionLists():_buildBlank(),
+      ),
     );
   }
 }

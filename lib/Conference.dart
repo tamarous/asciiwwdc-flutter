@@ -63,7 +63,7 @@ class ConferenceProvider {
 
   Future open() async{
 
-    String path = await DataManager.instance.databaseFullPath;
+    String path = await DataManager.instance.databaseForConferencesFullPath;
 
     db = await openDatabase(path, version:1, onCreate: (Database db, int version) async {
       await db.execute('''
@@ -92,7 +92,7 @@ class ConferenceProvider {
       await TrackProvider.instance.insert(conference.tracks[i]);
     }
 
-    close();
+    TrackProvider.instance.close();
 
     return conference;
   }
@@ -113,7 +113,6 @@ class ConferenceProvider {
       return Conference.fromMap(maps.first);
     }
 
-    close();
     return null;
   }
 
@@ -124,7 +123,7 @@ class ConferenceProvider {
 
     int result = await db.delete(tableConference, where: '$columnId = ?', whereArgs: [conferenceId]);
 
-    close();
+    await close();
 
     return result;
   }
@@ -135,13 +134,13 @@ class ConferenceProvider {
     }
     int result = await db.update(tableConference, conference.toMap(), where:'$columnId = ?', whereArgs: [conference.conferenceId]);
 
-    close();
+    await close();
 
     return result;
   }
 
   Future close() async {
-    if (db.isOpen) {
+    if (db != null && db.isOpen) {
       await db.close();
     }
   }

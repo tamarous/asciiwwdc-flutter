@@ -88,7 +88,7 @@ class SessionProvider {
   Database db;
   Future open() async {
 
-    String path = await DataManager.instance.databaseFullPath;
+    String path = await DataManager.instance.databaseForSessionsFullPath;
 
     db = await openDatabase(path,version: 1,onCreate: (Database db, int version) async {
       await db.execute('''
@@ -104,14 +104,13 @@ class SessionProvider {
   }
 
   Future<Session> insert(Session session) async {
-    
+
     if (db == null || !db.isOpen) {
       await open();
     }
     
     session.sessionId = await db.insert(tableSession, session.toMap());
 
-    close();
 
     return session;
   }
@@ -128,8 +127,6 @@ class SessionProvider {
       where: '$columnId = ?',
       whereArgs: [sessionId]
     );
-
-    close();
 
     if (maps.length > 0) {
       return Session.fromMap(maps.first);
@@ -148,38 +145,34 @@ class SessionProvider {
         where: queryString
     );
 
-    close();
-
     return sessionMaps.map((sessionMap) => Session.fromMap(sessionMap)).toList();
   }
 
 
   Future<int> delete(int sessionId) async {
     if (! db.isOpen) {
-      open();
+      await open();
     }
 
     int result = await db.delete(tableSession,where: '$columnId = ?',whereArgs: [sessionId]);
 
-    close();
 
     return result;
   }
 
   Future<int> update(Session session) async{
     if (db == null || !db.isOpen) {
-      open();
+      await open();
     }
 
     int result = await db.update(tableSession, session.toMap(),where: '$columnId = ?',whereArgs: [session.sessionId]);
-
-    close();
 
     return result;
   }
 
   Future close() async {
-    if (db.isOpen) {
+
+    if (db != null && db.isOpen) {
       await db.close();
     }
   }
