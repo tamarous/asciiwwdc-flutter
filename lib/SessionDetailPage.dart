@@ -32,23 +32,32 @@ class _SessionDetailState extends State<SessionDetailPage> {
       setState(() {
         ifFavorite = widget.session.isFavorite;
       });
+
     }
 
-    return new WebviewScaffold(
-        url: widget.session.sessionUrlString,
-        appBar: AppBar(
-          title: Text(
-            widget.session.sessionTitle,
+    Future<bool> _requestPop() {
+
+      return Future.value(true);
+    }
+
+    return WillPopScope(
+        child: WebviewScaffold(
+          url: widget.session.sessionUrlString,
+          appBar: AppBar(
+            title: Text(
+              widget.session.sessionTitle,
+            ),
+            actions: <Widget>[
+              IconButton(
+                icon:ifFavorite?Icon(Icons.favorite):Icon(Icons.favorite_border),
+                onPressed: toggleFavorite,
+              )
+            ],
           ),
-          actions: <Widget>[
-            IconButton(
-              icon:ifFavorite?Icon(Icons.favorite):Icon(Icons.favorite_border),
-              onPressed: toggleFavorite,
-            ) 
-          ],
+          withZoom: false,
+          withLocalStorage: true,
         ),
-        withZoom: false,
-        withLocalStorage: true,
+        onWillPop: _requestPop,
     );
   }
 }

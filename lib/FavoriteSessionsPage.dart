@@ -16,6 +16,17 @@ class _FavoriteSessionsState extends State<FavoriteSessionssPage> {
 
   bool _hasData = false;
 
+  Future _showSessionDetail(Session session) async {
+//    Session updatedSession = await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SessionDetailPage(session: session)));
+//
+//    if (updatedSession.isFavorite != session.isFavorite) {
+//      _fetchFavoriteSessionsList();
+//    }
+
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SessionDetailPage(session: session)));
+  }
+
+
   void _fetchFavoriteSessionsList() async {
     var sql = 'sessionIsFavorite = 1';
 
@@ -30,10 +41,8 @@ class _FavoriteSessionsState extends State<FavoriteSessionssPage> {
 
   Widget _buildSession(Session session) {
     return GestureDetector(
-      onTap: () => {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => SessionDetailPage(session: session),
-        ))
+      onTap: () {
+        _showSessionDetail(session);
       },
       child: Padding(
         padding: const EdgeInsets.all(12.0),

@@ -52,14 +52,16 @@ class Session {
     }
   }
 
-  void toggleFavorite() {
+  void toggleFavorite() async{
     _isFavorite = !_isFavorite;
 
     if (sessionId == null) {
-      SessionProvider.instance.insert(this);
+      await SessionProvider.instance.insert(this);
     } else {
-      SessionProvider.instance.update(this);
+      await SessionProvider.instance.update(this);
     }
+
+    await SessionProvider.instance.close();
   }
 
   bool get isFavorite {
@@ -110,7 +112,6 @@ class SessionProvider {
     }
     
     session.sessionId = await db.insert(tableSession, session.toMap());
-
 
     return session;
   }
