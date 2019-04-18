@@ -13,9 +13,11 @@ class AllConferencesPage extends StatefulWidget {
 
   @override
   AllConferencesState createState() => new AllConferencesState();
+
 }
 
 class AllConferencesState extends State<AllConferencesPage> {
+
   List<Conference> _conferences;
 
   bool hasData = false;
@@ -120,7 +122,7 @@ class AllConferencesState extends State<AllConferencesPage> {
       print(e);
     }
   }
-  //Color.fromRGBO(9, 97, 72, 1.0)
+
   Widget _buildCard(Conference conference) {
     Widget card = GestureDetector(
       child: Card(

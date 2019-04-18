@@ -15,44 +15,62 @@ class ConferenceDetailPage extends StatefulWidget {
 class _ConferenceDetailState extends State<ConferenceDetailPage>{
 
 
-  Widget _buildRow(Session session) {
+  Widget _buildRow(Session session, int row, int column) {
+
+
     return GestureDetector(
       child: Container(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(12.0),
         child: Row(
           children: <Widget>[
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 6.0,horizontal: 12.0),
                 child: Text(
                   session.sessionTitle,
                   style: TextStyle(
-                    fontSize: 18.0,
                     fontWeight: FontWeight.normal,
+                    fontSize: 18.0,
                   ),
                 ),
               ),
             ),
-//            IconButton(
-//              icon: session.isFavorite?Icon(Icons.favorite):Icon(Icons.favorite_border),
-//              onPressed: () => session.toggleFavorite(),
-//              iconSize: 20,
-//            ),
+            IconButton(
+              icon: widget.tracks[row].sessions[column].isFavorite?Icon(Icons.favorite):Icon(Icons.favorite_border),
+              onPressed: () {
+                session.toggleFavorite();
+                setState(() {
+                  widget.tracks[row].sessions[column] = session;
+                });
+              },
+              iconSize: 20,
+            ),
           ],
         ),
       ),
-      onTap: () {
+      onTap: () async {
         Navigator.push(context, new MaterialPageRoute(builder: (context) => new SessionDetailPage(session: session,)),);
       },
     );
   }
 
-  Widget _buildExpansionTile(Track track) {
+
+  List<Widget> _buildExpansionTileChildren(Track track, int row) {
+    List<Widget> tiles = [];
+
+    for(int col = 0; col < track.sessions.length;col++) {
+      tiles.add(_buildRow(track.sessions[col], row, col));
+    }
+
+    return tiles;
+  }
+
+  Widget _buildExpansionTile(Track track, int row) {
 
     return new ExpansionTile(
       title: new Text(track.trackName),
       key: new PageStorageKey(track),
-      children: track.sessions.map(_buildRow).toList(),
+      children: _buildExpansionTileChildren(track, row),
     );
   }
 
@@ -67,7 +85,7 @@ class _ConferenceDetailState extends State<ConferenceDetailPage>{
 
       body: new SafeArea(
         child: new ListView.builder(
-          itemBuilder: (BuildContext context, int index) => _buildExpansionTile(widget.tracks[index]),
+          itemBuilder: (BuildContext context, int row) => _buildExpansionTile(widget.tracks[row],row),
           itemCount: widget.tracks.length,
         ),
       ),

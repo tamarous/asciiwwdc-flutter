@@ -17,13 +17,14 @@ class _FavoriteSessionsState extends State<FavoriteSessionssPage> {
   bool _hasData = false;
 
   Future _showSessionDetail(Session session) async {
-//    Session updatedSession = await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SessionDetailPage(session: session)));
-//
-//    if (updatedSession.isFavorite != session.isFavorite) {
-//      _fetchFavoriteSessionsList();
-//    }
+    bool oldFavorite = session.isFavorite;
 
-    Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SessionDetailPage(session: session)));
+    Session updatedSession = await Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SessionDetailPage(session: session)));
+
+    if (updatedSession.isFavorite != oldFavorite) {
+      _fetchFavoriteSessionsList();
+    }
+
   }
 
 

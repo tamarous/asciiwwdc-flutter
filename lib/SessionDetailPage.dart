@@ -37,7 +37,9 @@ class _SessionDetailState extends State<SessionDetailPage> {
 
     Future<bool> _requestPop() {
 
-      return Future.value(true);
+      Navigator.of(context).pop(widget.session);
+
+      return Future.value(false);
     }
 
     return WillPopScope(
