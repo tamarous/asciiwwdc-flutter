@@ -92,6 +92,13 @@ class AllConferencesState extends State<AllConferencesPage> {
       conference.tracks = tracks;
       conference.conferenceTime = conferenceTime;
 
+
+      for(int j = 0; j < conference.tracks.length; j++) {
+        for(int k = 0; k < conference.tracks[j].sessions.length; k++) {
+          conference.tracks[j].sessions[k].sessionConferenceName = conferenceName;
+        }
+      }
+
       conferences.add(conference);
     }
 

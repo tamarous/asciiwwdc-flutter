@@ -10,9 +10,7 @@ class DataManager {
 
     static DataManager get instance => _getInstance();
 
-    DataManager._internal() {
-
-    }
+    DataManager._internal() ;
 
     static DataManager _getInstance() {
       if (_instance == null) {

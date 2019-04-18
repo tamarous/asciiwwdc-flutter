@@ -8,12 +8,14 @@ final String columnTitle = 'sessionTitle';
 final String columnUrlString = 'sessionUrlString';
 final String columnFavorite = 'sessionIsFavorite';
 final String columnTrackId = 'trackId';
+final String columnConferenceName = 'conferenceName';
 
 class Session {
 
   int sessionId;
   String sessionTitle;
   String sessionUrlString;
+  String sessionConferenceName;
   bool _isFavorite = false;
   int trackId;
 
@@ -24,6 +26,7 @@ class Session {
       columnTitle:sessionTitle,
       columnUrlString:sessionUrlString,
       columnFavorite:_isFavorite == true?1:0,
+      columnConferenceName:sessionConferenceName,
     };
     if (sessionId != null) {
       map[columnId] = sessionId;
@@ -40,6 +43,7 @@ class Session {
     sessionUrlString = map[columnUrlString];
     _isFavorite = map[columnFavorite]==1;
     trackId = map[columnTrackId];
+    sessionConferenceName = map[columnConferenceName];
   }
 
   set favorite(bool favorite) {
@@ -99,7 +103,8 @@ class SessionProvider {
           $columnTitle text not null,
           $columnUrlString text not null,
           $columnFavorite integer not null,
-          $columnTrackId integer not null
+          $columnTrackId integer not null,
+          $columnConferenceName text not null
         )
       ''');
     });
@@ -124,7 +129,7 @@ class SessionProvider {
 
     List<Map> maps = await db.query(
       tableSession,
-      columns: [columnId, columnTitle,columnUrlString, columnFavorite],
+      columns: [columnId, columnTitle,columnUrlString, columnFavorite, columnConferenceName],
       where: '$columnId = ?',
       whereArgs: [sessionId]
     );
@@ -142,7 +147,7 @@ class SessionProvider {
 
     List<Map> sessionMaps = await db.query(
         tableSession,
-        columns: [columnId, columnTitle, columnUrlString, columnFavorite],
+        columns: [columnId, columnTitle, columnUrlString, columnFavorite, columnConferenceName],
         where: queryString
     );
 

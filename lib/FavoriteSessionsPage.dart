@@ -46,16 +46,35 @@ class _FavoriteSessionsState extends State<FavoriteSessionssPage> {
         _showSessionDetail(session);
       },
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(2.0),
         child: Container(
-          margin: EdgeInsets.symmetric(vertical: 6.0,horizontal: 12.0),
-          child: Text(
-            session.sessionTitle,
-            style: TextStyle(
-              fontWeight: FontWeight.normal,
-              fontSize: 18.0,
-            ),
-          )
+          padding: EdgeInsets.symmetric(vertical: 6.0,horizontal: 4.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 4.0,horizontal: 4.0),
+                child: Text(
+                  session.sessionTitle,
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 18.0,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                child: Text(
+                  session.sessionConferenceName,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.0,
+                  ),
+                ),
+              )
+            ],
+          ),
+          
         ),
       ),
     );
