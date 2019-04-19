@@ -8,32 +8,29 @@ import 'ConferenceDetailPage.dart';
 import 'FavoriteSessionsPage.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
+import 'package:connectivity/connectivity.dart';
 
 class AllConferencesPage extends StatefulWidget {
-
   @override
   AllConferencesState createState() => new AllConferencesState();
-
 }
 
 class AllConferencesState extends State<AllConferencesPage> {
-
   List<Conference> _conferences;
 
-  bool hasData = false;
+  bool _hasLoadedData = false;
 
   static const String URL_PREFIX = 'https://www.asciiwwdc.com';
 
   List<Session> parseSessions(List<dom.Element> sessionElements) {
     List<Session> sessions = new List<Session>();
 
-    for(int i = 0; i < sessionElements.length;i++) {
+    for (int i = 0; i < sessionElements.length; i++) {
       dom.Element sessionElement = sessionElements[i];
 
       var aElements = sessionElement.getElementsByTagName('a');
 
-      for(int j = 0; j < aElements.length;j++) {
-
+      for (int j = 0; j < aElements.length; j++) {
         dom.Element aElement = aElements[j];
         Session session = new Session();
         session.sessionUrlString = URL_PREFIX + aElement.attributes['href'];
@@ -49,12 +46,13 @@ class AllConferencesState extends State<AllConferencesPage> {
   List<Track> parseTracks(List<dom.Element> trackElements) {
     List<Track> tracks = new List<Track>();
 
-    for(int i = 0; i < trackElements.length;i++) {
+    for (int i = 0; i < trackElements.length; i++) {
       dom.Element trackElement = trackElements[i];
 
       var trackName = trackElement.getElementsByTagName('h1').first.text;
 
-      List<Session> sessions = parseSessions(trackElement.getElementsByClassName('sessions'));
+      List<Session> sessions =
+          parseSessions(trackElement.getElementsByClassName('sessions'));
 
       Track track = new Track();
       track.trackName = trackName;
@@ -65,25 +63,39 @@ class AllConferencesState extends State<AllConferencesPage> {
     return tracks;
   }
 
+  Future<List<Conference>> loadConferencesFromDatabase() async {
+    List<Conference> conferences;
 
-  Future<List<Conference>> parseConferencesFromResponse(Response response) async {
+    conferences = await ConferenceProvider.instance.getConferences('1 = 1');
 
+    await ConferenceProvider.instance.close();
+
+    return conferences;
+  }
+
+  Future<List<Conference>> loadConferencesFromNetworkResponse(
+      Response response) async {
     List<Conference> conferences = new List();
 
     var document = parser.parse(response.data);
 
     var conferenceElements = document.getElementsByClassName('conference');
 
-    for(int i = 0; i < conferenceElements.length;i++) {
-
+    for (int i = 0; i < conferenceElements.length; i++) {
       dom.Element conferenceElement = conferenceElements[i];
       var trackElements = conferenceElement.getElementsByClassName('track');
       List<Track> tracks = parseTracks(trackElements);
 
-      var conferenceName = conferenceElement.getElementsByTagName('h1').first.text;
-      var conferenceLogoUrl = conferenceElement.getElementsByTagName('img').first.attributes['src'];
-      var conferenceShortDescription = conferenceElement.getElementsByTagName('h2').first.text;
-      var conferenceTime = conferenceElement.getElementsByTagName('time').first.attributes['content'];
+      var conferenceName =
+          conferenceElement.getElementsByTagName('h1').first.text;
+      var conferenceLogoUrl =
+          conferenceElement.getElementsByTagName('img').first.attributes['src'];
+      var conferenceShortDescription =
+          conferenceElement.getElementsByTagName('h2').first.text;
+      var conferenceTime = conferenceElement
+          .getElementsByTagName('time')
+          .first
+          .attributes['content'];
 
       Conference conference = new Conference();
       conference.conferenceName = conferenceName;
@@ -92,10 +104,10 @@ class AllConferencesState extends State<AllConferencesPage> {
       conference.tracks = tracks;
       conference.conferenceTime = conferenceTime;
 
-
-      for(int j = 0; j < conference.tracks.length; j++) {
-        for(int k = 0; k < conference.tracks[j].sessions.length; k++) {
-          conference.tracks[j].sessions[k].sessionConferenceName = conferenceName;
+      for (int j = 0; j < conference.tracks.length; j++) {
+        for (int k = 0; k < conference.tracks[j].sessions.length; k++) {
+          conference.tracks[j].sessions[k].sessionConferenceName =
+              conferenceName;
         }
       }
 
@@ -105,7 +117,7 @@ class AllConferencesState extends State<AllConferencesPage> {
     return conferences;
   }
 
-  void saveAllConferences() async{
+  void saveAllConferencesToDatabase() async {
     for (int i = 0; i < _conferences.length; i++) {
       await ConferenceProvider.instance.insert(_conferences[i]);
     }
@@ -113,29 +125,55 @@ class AllConferencesState extends State<AllConferencesPage> {
     await ConferenceProvider.instance.close();
   }
 
-  void getConferences() async {
-    try {
-      Response response = await Dio().get(URL_PREFIX);
-      List<Conference> conferences = await parseConferencesFromResponse(response);
+  void checkInternetConnection() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+    
+    } else if (connectivityResult == ConnectivityResult.none) {
+      
+    }
+  }
+
+  void loadConferences() async {
+    checkInternetConnection();
+
+    List<Conference> conferences;
+
+    conferences = await loadConferencesFromDatabase();
+
+    if (conferences.isEmpty) {
+
+      try {
+        Response response = await Dio().get(URL_PREFIX);
+        conferences = await loadConferencesFromNetworkResponse(response);
+
+        setState(() {
+          _conferences = conferences;
+          _hasLoadedData = true;
+        });
+
+        saveAllConferencesToDatabase();
+      } catch (e) {
+        print(e);
+      }
+    } else {
 
       setState(() {
         _conferences = conferences;
-        hasData = true;
+        _hasLoadedData = true;
       });
-
-      saveAllConferences();
-
-    } catch(e) {
-      print(e);
     }
   }
 
   Widget _buildCard(Conference conference) {
+
     Widget card = GestureDetector(
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         elevation: 8.0,
-        margin: EdgeInsets.symmetric(horizontal: 4.0, vertical:8.0),
+        margin: EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
         child: Container(
           decoration: BoxDecoration(color: Color.fromRGBO(252, 250, 242, 1.0)),
           child: new Row(
@@ -147,7 +185,8 @@ class AllConferencesState extends State<AllConferencesPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       new Padding(
-                        padding: EdgeInsets.symmetric(vertical:12.0,horizontal: 6.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 12.0, horizontal: 6.0),
                         child: Center(
                           child: new Text(
                             conference.conferenceName,
@@ -160,7 +199,8 @@ class AllConferencesState extends State<AllConferencesPage> {
                         ),
                       ),
                       new Padding(
-                        padding: EdgeInsets.symmetric(vertical:12.0,horizontal: 6.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 12.0, horizontal: 6.0),
                         child: Center(
                           child: new Text(
                             conference.conferenceShortDescription,
@@ -173,17 +213,18 @@ class AllConferencesState extends State<AllConferencesPage> {
                         ),
                       ),
                       new Padding(
-                          padding: EdgeInsets.symmetric(vertical:12.0,horizontal: 6.0),
-                          child: Center(
-                            child: new Text(
-                              conference.conferenceTime,
-                              style: new TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 18,
-                                color: Color.fromRGBO(130, 130, 130, 1.0),
-                              ),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 12.0, horizontal: 6.0),
+                        child: Center(
+                          child: new Text(
+                            conference.conferenceTime != null?conference.conferenceTime:'Unknown Time',
+                            style: new TextStyle(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 18,
+                              color: Color.fromRGBO(130, 130, 130, 1.0),
                             ),
                           ),
+                        ),
                       ),
                     ],
                   ),
@@ -194,11 +235,14 @@ class AllConferencesState extends State<AllConferencesPage> {
         ),
       ),
       onTap: () {
-        Navigator.push(context, new MaterialPageRoute(
-            builder: (context) => new ConferenceDetailPage(tracks: conference.tracks,)
-        ),);
+        Navigator.push(
+          context,
+          new MaterialPageRoute(
+              builder: (context) => new ConferenceDetailPage(
+                    tracks: conference.tracks,
+                  )),
+        );
       },
-
     );
 
     return card;
@@ -225,35 +269,37 @@ class AllConferencesState extends State<AllConferencesPage> {
   void initState() {
     super.initState();
 
-    getConferences();
+    loadConferences();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: new AppBar(
         title: new Text('ASCIIWWDC-Flutter'),
         actions: <Widget>[
           new IconButton(
-            icon: new Icon(Icons.search),
-            onPressed: () {
-              Navigator.push(context, new MaterialPageRoute(
-                  builder: (context) => new SearchPage(conferences: hasData?_conferences:new List<String>())
-              ));
-            }
-          ),
+              icon: new Icon(Icons.search),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (context) => new SearchPage(
+                            conferences:
+                                _hasLoadedData ? _conferences : new List<String>())));
+              }),
           new IconButton(
-            icon: new Icon(Icons.favorite_border),
-            onPressed: (){
-              Navigator.push(context, new MaterialPageRoute(
-                  builder: (context) => FavoriteSessionssPage()
-              ));
-          }),
+              icon: new Icon(Icons.favorite_border),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (context) => FavoriteSessionssPage()));
+              }),
         ],
       ),
-      body: new SafeArea(child: hasData? _buildConferences():_buildBlank()),
+      body: new SafeArea(child: _hasLoadedData ? _buildConferences() : _buildBlank()),
     );
   }
 }

@@ -134,6 +134,10 @@ class SessionProvider {
       whereArgs: [sessionId]
     );
 
+    if (maps == null) {
+      return null;
+    }
+
     if (maps.length > 0) {
       return Session.fromMap(maps.first);
     }
@@ -150,6 +154,10 @@ class SessionProvider {
         columns: [columnId, columnTitle, columnUrlString, columnFavorite, columnConferenceName],
         where: queryString
     );
+
+    if (sessionMaps == null) {
+      return null;
+    }
 
     return sessionMaps.map((sessionMap) => Session.fromMap(sessionMap)).toList();
   }

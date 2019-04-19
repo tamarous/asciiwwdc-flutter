@@ -40,6 +40,12 @@ class Conference {
     conferenceName = map[columnName];
     conferenceShortDescription = map[columnShortDescription];
   }
+
+  @override
+  String toString() {
+    String conferenceString = 'name: $conferenceName, logoUrl: $conferenceLogoUrl, shortDesc: $conferenceShortDescription, time: $conferenceTime';
+    return conferenceString;
+  }
 }
 
 class ConferenceProvider {
@@ -72,7 +78,7 @@ class ConferenceProvider {
           $columnName text not null,
           $columnLogoUrl text not null,
           $columnShortDescription text not null,
-          $columnTime text not null
+          $columnTime text
         )
       ''');
     });
@@ -109,11 +115,34 @@ class ConferenceProvider {
       whereArgs: [conferenceId],
     );
 
+    if (maps == null) {
+      return null;
+    }
+
     if (maps.length > 0) {
       return Conference.fromMap(maps.first);
     }
 
     return null;
+  }
+
+
+  Future<List<Conference>> getConferences(String queryString) async {
+    if (db == null || !db.isOpen) {
+      await open();
+    }
+
+    List<Map> conferenceMaps = await db.query(
+      tableConference,
+      columns: [columnId,columnName,columnLogoUrl,columnShortDescription,columnTime],
+      where: queryString,
+    );
+
+    if (conferenceMaps == null) {
+      return null;
+    }
+
+    return conferenceMaps.map((conferenceMap) => Conference.fromMap(conferenceMap)).toList();
   }
 
   Future<int> delete(int conferenceId) async {
