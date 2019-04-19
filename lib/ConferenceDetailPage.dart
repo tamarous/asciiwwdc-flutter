@@ -15,7 +15,7 @@ class ConferenceDetailPage extends StatefulWidget {
 class _ConferenceDetailState extends State<ConferenceDetailPage>{
 
 
-  Widget _buildRow(Session session, int row, int column) {
+  Widget _buildRow(int row, int column) {
 
 
     return GestureDetector(
@@ -27,7 +27,7 @@ class _ConferenceDetailState extends State<ConferenceDetailPage>{
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 6.0,horizontal: 12.0),
                 child: Text(
-                  session.sessionTitle,
+                  widget.tracks[row].sessions[column].sessionTitle,
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 18.0,
@@ -38,9 +38,9 @@ class _ConferenceDetailState extends State<ConferenceDetailPage>{
             IconButton(
               icon: widget.tracks[row].sessions[column].isFavorite?Icon(Icons.favorite):Icon(Icons.favorite_border),
               onPressed: () {
-                session.toggleFavorite();
+                widget.tracks[row].sessions[column].toggleFavorite();
                 setState(() {
-                  widget.tracks[row].sessions[column] = session;
+                  widget.tracks[row].sessions[column] = widget.tracks[row].sessions[column];
                 });
               },
               iconSize: 20,
@@ -55,22 +55,22 @@ class _ConferenceDetailState extends State<ConferenceDetailPage>{
   }
 
 
-  List<Widget> _buildExpansionTileChildren(Track track, int row) {
+  List<Widget> _buildExpansionTileChildren(int row) {
     List<Widget> tiles = [];
 
-    for(int col = 0; col < track.sessions.length;col++) {
-      tiles.add(_buildRow(track.sessions[col], row, col));
+    for(int col = 0; col < widget.tracks[row].sessions.length;col++) {
+      tiles.add(_buildRow(row, col));
     }
 
     return tiles;
   }
 
-  Widget _buildExpansionTile(Track track, int row) {
+  Widget _buildExpansionTile(int row) {
 
     return new ExpansionTile(
-      title: new Text(track.trackName),
-      key: new PageStorageKey(track),
-      children: _buildExpansionTileChildren(track, row),
+      title: new Text(widget.tracks[row].trackName),
+      key: new PageStorageKey(widget.tracks[row]),
+      children: _buildExpansionTileChildren(row),
     );
   }
 
@@ -85,7 +85,7 @@ class _ConferenceDetailState extends State<ConferenceDetailPage>{
 
       body: new SafeArea(
         child: new ListView.builder(
-          itemBuilder: (BuildContext context, int row) => _buildExpansionTile(widget.tracks[row],row),
+          itemBuilder: (BuildContext context, int row) => _buildExpansionTile(row),
           itemCount: widget.tracks.length,
         ),
       ),
