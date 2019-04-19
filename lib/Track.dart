@@ -126,7 +126,6 @@ class TrackProvider {
       tracks = trackMaps.map((trackMap) => Track.fromMap(trackMap)).toList();
 
       for(int i = 0; i < tracks.length; i++) {
-        print('\tTrackId is ${tracks[i].trackId}');
 
         tracks[i].sessions = await SessionProvider.instance.getSessions('trackId = ${tracks[i].trackId}');
       }

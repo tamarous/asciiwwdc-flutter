@@ -49,7 +49,7 @@ class _ConferenceDetailState extends State<ConferenceDetailPage>{
         ),
       ),
       onTap: () async {
-        Navigator.push(context, new MaterialPageRoute(builder: (context) => new SessionDetailPage(session: session,)),);
+        Navigator.push(context, new MaterialPageRoute(builder: (context) => new SessionDetailPage(session: widget.tracks[row].sessions[column],)),);
       },
     );
   }
