@@ -27,7 +27,6 @@ class _FavoriteSessionsState extends State<FavoriteSessionssPage> {
 
   }
 
-
   void _fetchFavoriteSessionsList() async {
     var sql = 'sessionIsFavorite = 1';
 

@@ -98,7 +98,7 @@ class ConferenceProvider {
       await TrackProvider.instance.insert(conference.tracks[i]);
     }
 
-    TrackProvider.instance.close();
+    await TrackProvider.instance.close();
 
     return conference;
   }
@@ -115,10 +115,6 @@ class ConferenceProvider {
       whereArgs: [conferenceId],
     );
 
-    if (maps == null) {
-      return null;
-    }
-
     if (maps.length > 0) {
       return Conference.fromMap(maps.first);
     }
@@ -128,6 +124,9 @@ class ConferenceProvider {
 
 
   Future<List<Conference>> getConferences(String queryString) async {
+
+    List<Conference> conferences;
+
     if (db == null || !db.isOpen) {
       await open();
     }
@@ -138,11 +137,17 @@ class ConferenceProvider {
       where: queryString,
     );
 
-    if (conferenceMaps == null) {
-      return null;
+    if (conferenceMaps.length > 0) {
+      conferences = conferenceMaps.map((conferenceMap) => Conference.fromMap(conferenceMap)).toList();
+      for(int i = 0; i < conferences.length;i++) {
+        conferences[i].tracks = await TrackProvider.instance.getTracks('conferenceId = ${conferences[i].conferenceId}');
+      }
+      
+      await TrackProvider.instance.close();
+      return conferences;
     }
-
-    return conferenceMaps.map((conferenceMap) => Conference.fromMap(conferenceMap)).toList();
+    return null;
+    
   }
 
   Future<int> delete(int conferenceId) async {
@@ -152,7 +157,6 @@ class ConferenceProvider {
 
     int result = await db.delete(tableConference, where: '$columnId = ?', whereArgs: [conferenceId]);
 
-    await close();
 
     return result;
   }
@@ -162,8 +166,6 @@ class ConferenceProvider {
       await open();
     }
     int result = await db.update(tableConference, conference.toMap(), where:'$columnId = ?', whereArgs: [conference.conferenceId]);
-
-    await close();
 
     return result;
   }

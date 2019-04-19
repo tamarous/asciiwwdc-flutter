@@ -108,6 +108,37 @@ class TrackProvider {
     return null;
   }
 
+  Future<List<Track>> getTracks(String queryString) async {
+
+    List<Track> tracks;
+
+    if (db == null || !db.isOpen) {
+      await open();
+    }
+
+    List<Map> trackMaps = await db.query(
+      tableTrack,
+      columns: [columnTrackId, columnTrackName, columnConferenceId],
+      where: queryString
+    );
+
+    if (trackMaps.length > 0) {
+      tracks = trackMaps.map((trackMap) => Track.fromMap(trackMap)).toList();
+
+      for(int i = 0; i < tracks.length; i++) {
+        tracks[i].sessions = await SessionProvider.instance.getSessions('trackId = ${tracks[i].conferenceId}');
+      }
+
+      await SessionProvider.instance.close();
+
+      return tracks;
+
+    }
+  
+    return null;
+  }
+
+
   Future<int> delete(int trackId) async {
     if (db == null || !db.isOpen) {
       await open();

@@ -143,7 +143,7 @@ class AllConferencesState extends State<AllConferencesPage> {
 
     conferences = await loadConferencesFromDatabase();
 
-    if (conferences.isEmpty) {
+    if (conferences == null || conferences.isEmpty) {
 
       try {
         Response response = await Dio().get(URL_PREFIX);
