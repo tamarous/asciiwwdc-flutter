@@ -80,7 +80,7 @@ class TrackProvider {
 
     for(int i = 0; i < track.sessions.length;i++) {
       track.sessions[i].trackId = track.trackId;
-      await SessionProvider.instance.insert(track.sessions[i]);
+      track.sessions[i] = await SessionProvider.instance.insert(track.sessions[i]);
     }
 
     await SessionProvider.instance.close();
@@ -126,7 +126,9 @@ class TrackProvider {
       tracks = trackMaps.map((trackMap) => Track.fromMap(trackMap)).toList();
 
       for(int i = 0; i < tracks.length; i++) {
-        tracks[i].sessions = await SessionProvider.instance.getSessions('trackId = ${tracks[i].conferenceId}');
+        print('\tTrackId is ${tracks[i].trackId}');
+
+        tracks[i].sessions = await SessionProvider.instance.getSessions('trackId = ${tracks[i].trackId}');
       }
 
       await SessionProvider.instance.close();

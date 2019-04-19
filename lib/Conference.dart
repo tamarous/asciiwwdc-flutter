@@ -95,7 +95,7 @@ class ConferenceProvider {
     for(int i = 0; i < conference.tracks.length;i++) {
       conference.tracks[i].conferenceId = conference.conferenceId;
 
-      await TrackProvider.instance.insert(conference.tracks[i]);
+      conference.tracks[i] = await TrackProvider.instance.insert(conference.tracks[i]);
     }
 
     await TrackProvider.instance.close();
@@ -140,6 +140,7 @@ class ConferenceProvider {
     if (conferenceMaps.length > 0) {
       conferences = conferenceMaps.map((conferenceMap) => Conference.fromMap(conferenceMap)).toList();
       for(int i = 0; i < conferences.length;i++) {
+       
         conferences[i].tracks = await TrackProvider.instance.getTracks('conferenceId = ${conferences[i].conferenceId}');
       }
       

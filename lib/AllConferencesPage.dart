@@ -119,7 +119,7 @@ class AllConferencesState extends State<AllConferencesPage> {
 
   void saveAllConferencesToDatabase() async {
     for (int i = 0; i < _conferences.length; i++) {
-      await ConferenceProvider.instance.insert(_conferences[i]);
+      _conferences[i] = await ConferenceProvider.instance.insert(_conferences[i]);
     }
 
     await ConferenceProvider.instance.close();
