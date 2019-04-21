@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'Track.dart';
-import 'Session.dart';
 import 'package:asciiwwdc/SessionDetailPage.dart';
 
 class ConferenceDetailPage extends StatefulWidget {
@@ -16,7 +15,6 @@ class _ConferenceDetailState extends State<ConferenceDetailPage>{
 
 
   Widget _buildRow(int row, int column) {
-
 
     return GestureDetector(
       child: Container(
@@ -68,7 +66,13 @@ class _ConferenceDetailState extends State<ConferenceDetailPage>{
   Widget _buildExpansionTile(int row) {
 
     return new ExpansionTile(
-      title: new Text(widget.tracks[row].trackName),
+      title: new Text(
+        widget.tracks[row].trackName,
+        style: TextStyle(
+          fontWeight: FontWeight.normal,
+          fontSize: 20.0,
+        ),
+        ),
       key: new PageStorageKey(widget.tracks[row]),
       children: _buildExpansionTileChildren(row),
     );
