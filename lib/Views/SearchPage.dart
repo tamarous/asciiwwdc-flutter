@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:material_search/material_search.dart';
-import 'Conference.dart';
-import 'Session.dart';
-import 'Track.dart';
+import '../Model/Conference.dart';
+import '../Model/Session.dart';
+import '../Model/Track.dart';
 import 'SessionDetailPage.dart';
 
 class SearchPage extends StatefulWidget {

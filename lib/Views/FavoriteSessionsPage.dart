@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'SessionDetailPage.dart';
-import 'Session.dart';
+import '../Model/Session.dart';
 
 class FavoriteSessionssPage extends StatefulWidget {
 

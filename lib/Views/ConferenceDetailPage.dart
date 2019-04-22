@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'Track.dart';
-import 'package:asciiwwdc/SessionDetailPage.dart';
+import '../Model/Track.dart';
+import 'SessionDetailPage.dart';
 
 class ConferenceDetailPage extends StatefulWidget {
   final List<Track> tracks;

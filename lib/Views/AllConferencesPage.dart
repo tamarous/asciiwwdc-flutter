@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'Conference.dart';
-import 'Session.dart';
-import 'Track.dart';
+import '../Model/Conference.dart';
+import '../Model/Session.dart';
+import '../Model/Track.dart';
 import 'SearchPage.dart';
 import 'ConferenceDetailPage.dart';
 import 'FavoriteSessionsPage.dart';
