@@ -1,6 +1,10 @@
 # asciiwwdc
 
-A new Flutter application.
+A new Flutter application which is a simple client for [ASCIIWWDC](https://www.asciiwwdc.com). The screenshots are as follows:
+
+![Demo](https://github.com/tamarous/asciiwwdc-flutter/blob/master/demo.gif)
+
+
 
 ## Getting Started
 
