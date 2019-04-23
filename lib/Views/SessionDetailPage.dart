@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:share/share.dart';
+
 import '../Model/Session.dart';
 
 class SessionDetailPage extends StatefulWidget {

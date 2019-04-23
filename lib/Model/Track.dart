@@ -1,6 +1,9 @@
-import 'Session.dart';
+
 import 'package:sqflite/sqflite.dart';
+
+import 'Session.dart';
 import 'DataManager.dart';
+
 final String tableTrack = 'track';
 final String columnTrackId = 'trackId';
 final String columnTrackName = 'trackName';

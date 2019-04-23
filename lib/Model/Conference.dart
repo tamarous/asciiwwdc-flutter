@@ -1,7 +1,7 @@
-import 'Track.dart';
 import 'package:sqflite/sqflite.dart';
-import 'DataManager.dart';
 
+import 'DataManager.dart';
+import 'Track.dart';
 
 final String tableConference = 'conference';
 final String columnId = 'conferenceId';

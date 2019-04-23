@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'AllConferencesPage.dart';
 
 void main() => runApp(MyApp());
@@ -30,41 +31,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-//      bottomNavigationBar: BottomNavigationBar(
-//        items: [
-//          BottomNavigationBarItem(
-//            icon: Icon(
-//              Icons.list,
-//              color: _bottomNavigationColor,
-//            ),
-//            title: Text(
-//              'All',
-//              style:TextStyle(
-//                color:Colors.black
-//              )
-//            ),
-//          ),
-//          BottomNavigationBarItem(
-//            icon:Icon(
-//                Icons.favorite,
-//                color: _bottomNavigationColor,
-//            ),
-//            title: Text(
-//              'Favorites',
-//              style:TextStyle(
-//                color:Colors.black,
-//              )
-//            )
-//          )
-//        ],
-//        currentIndex: _selectedIndex,
-//        onTap: (int index) {
-//          setState(() {
-//            _selectedIndex = index;
-//            print('_selectedIndex changed to ${_selectedIndex}');
-//          });
-//        },
-//      ),
       body: new AllConferencesPage(),
     );
   }

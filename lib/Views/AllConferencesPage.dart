@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:html/parser.dart' as parser;
+import 'package:html/dom.dart' as dom;
+import 'package:connectivity/connectivity.dart';
+
 import '../Model/Conference.dart';
 import '../Model/Session.dart';
 import '../Model/Track.dart';
 import 'SearchPage.dart';
 import 'ConferenceDetailPage.dart';
 import 'FavoriteSessionsPage.dart';
-import 'package:html/parser.dart' as parser;
-import 'package:html/dom.dart' as dom;
-import 'package:connectivity/connectivity.dart';
+
 
 class AllConferencesPage extends StatefulWidget {
   @override

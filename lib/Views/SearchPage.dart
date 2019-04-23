@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_search/material_search.dart';
+
 import '../Model/Conference.dart';
 import '../Model/Session.dart';
 import '../Model/Track.dart';
