@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:quick_actions/quick_actions.dart';
 
 import './Views/AllConferencesPage.dart';
 
@@ -36,32 +35,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    final QuickActions quickActions = const QuickActions();
-
-    quickActions.initialize((String shortcutType) {
-      if (shortcutType == 'action_main') {
-        print('The user tapped the main view');
-      } else if (shortcutType == 'action_favorite') {
-        print('The user tappped the favorite view');
-      }
-
-    });
-
-    quickActions.setShortcutItems(<ShortcutItem>[
-      const ShortcutItem(
-        type:'action_main',
-        localizedTitle: 'Main view',
-      ),
-      const ShortcutItem(
-        type: 'action_favorite',
-        localizedTitle: 'Favorite view',
-      ),
-    ]);
-  }
 }
 
 
