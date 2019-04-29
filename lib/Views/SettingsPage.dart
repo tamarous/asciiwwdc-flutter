@@ -44,26 +44,6 @@ class SettingsPageState extends State<SettingsPage> {
 
   }
 
-  Widget _buildRow(Color selectedColor) {
-
-    return GestureDetector(
-      child: ListTile(
-        title: Text(_mappedColors[selectedColor]),
-      ),
-      onTap: () {
-        ThemeData themeData = ThemeData(primaryColor: selectedColor);
-        _store.dispatch(RefreshThemeDataAction(themeData));
-      },
-    );
-  }
-
-  Widget _buildList() {
-    return ListView.builder(
-        itemBuilder: (context, index) => _buildRow(_themeColors[index]),
-        itemCount: _themeColors.length,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     _store = StoreProvider.of(context);

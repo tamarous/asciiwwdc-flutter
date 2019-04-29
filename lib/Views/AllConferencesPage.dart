@@ -238,7 +238,7 @@ class AllConferencesState extends State<AllConferencesPage> {
           context,
           new MaterialPageRoute(
               builder: (context) => new ConferenceDetailPage(
-                    tracks: conference.tracks,
+                    conference: conference,
                   )),
         );
       },
