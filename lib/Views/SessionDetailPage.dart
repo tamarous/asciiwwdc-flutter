@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'dart:async';
 import 'package:share/share.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../Model/Session.dart';
 
@@ -14,6 +15,9 @@ class SessionDetailPage extends StatefulWidget {
 }
 
 class _SessionDetailState extends State<SessionDetailPage> {
+
+  final Completer<WebViewController> _controller = Completer<WebViewController>();
+
   bool ifFavorite = false;
 
   @override
@@ -22,39 +26,36 @@ class _SessionDetailState extends State<SessionDetailPage> {
     ifFavorite = widget.session.isFavorite;
   }
 
+  void toggleFavorite() async {
+    widget.session.toggleFavorite();
+
+    setState(() {
+      ifFavorite = widget.session.isFavorite;
+    });
+  }
+
+  Future<bool> _requestPop() {
+    Navigator.of(context).pop(widget.session);
+
+    return Future.value(false);
+  }
+
+  void shareSession(Session session) {
+    Share.share('check out my website https://www.tamarous.com');
+  }
+
   @override
   Widget build(BuildContext context) {
-    void toggleFavorite() async {
-      widget.session.toggleFavorite();
-
-      setState(() {
-        ifFavorite = widget.session.isFavorite;
-      });
-    }
-
-    Future<bool> _requestPop() {
-      Navigator.of(context).pop(widget.session);
-
-      return Future.value(false);
-    }
-
-    void shareSession(Session session) {
-      Share.share('check out my website https://www.tamarous.com');
-    }
 
     return WillPopScope(
-      child: WebviewScaffold(
-        withJavascript: true,
-        url: widget.session.sessionUrlString,
+      child: Scaffold(
         appBar: AppBar(
           title: Text(
             widget.session.sessionTitle,
           ),
           actions: <Widget>[
             IconButton(
-              icon: ifFavorite
-                  ? Icon(Icons.favorite)
-                  : Icon(Icons.favorite_border),
+              icon:ifFavorite?Icon(Icons.favorite):Icon(Icons.favorite_border),
               onPressed: toggleFavorite,
             ),
             IconButton(
@@ -65,8 +66,25 @@ class _SessionDetailState extends State<SessionDetailPage> {
             )
           ],
         ),
-        withZoom: false,
-        withLocalStorage: true,
+        body: Builder(builder: (BuildContext context) {
+          return WebView(
+            initialUrl: widget.session.sessionUrlString,
+            javascriptMode: JavascriptMode.unrestricted,
+            onWebViewCreated: (WebViewController webViewController) {
+              _controller.complete(webViewController);
+            },
+            onPageFinished: (String url) {
+              _controller.future.then((WebViewController webViewController) {
+                String removeHeadFooterScript = 'var header = document.getElementsByTagName(\"header\")[0];'+
+                    'header.parentNode.removeChild(header);'+
+                    'var footer = document.getElementsByTagName(\"footer\")[0];'+
+                    'footer.parentNode.removeChild(footer);';
+
+                webViewController.evaluateJavascript(removeHeadFooterScript);
+              });
+            },
+          );
+        }),
       ),
       onWillPop: _requestPop,
     );
