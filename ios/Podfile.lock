@@ -8,8 +8,6 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
-  - quick_actions (0.0.1):
-    - Flutter
   - Reachability (3.2)
   - share (0.5.2):
     - Flutter
@@ -21,7 +19,6 @@ DEPENDENCIES:
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
   - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
-  - quick_actions (from `.symlinks/plugins/quick_actions/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
 
@@ -37,8 +34,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/flutter/ios"
   flutter_webview_plugin:
     :path: ".symlinks/plugins/flutter_webview_plugin/ios"
-  quick_actions:
-    :path: ".symlinks/plugins/quick_actions/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
   sqflite:
@@ -49,7 +44,6 @@ SPEC CHECKSUMS:
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  quick_actions: 07414f1e5cb71fc4d32a0670b62c460e619366b2
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   share: 7d22fe8baedfe93aefd864bf0b73f29711fbb0a3
   sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a

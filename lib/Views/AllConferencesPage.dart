@@ -10,7 +10,7 @@ import '../Model/Track.dart';
 import 'SearchPage.dart';
 import 'ConferenceDetailPage.dart';
 import 'FavoriteSessionsPage.dart';
-
+import 'SettingsPage.dart';
 
 class AllConferencesPage extends StatefulWidget {
   @override
@@ -121,7 +121,8 @@ class AllConferencesState extends State<AllConferencesPage> {
 
   void saveAllConferencesToDatabase() async {
     for (int i = 0; i < _conferences.length; i++) {
-      _conferences[i] = await ConferenceProvider.instance.insert(_conferences[i]);
+      _conferences[i] =
+          await ConferenceProvider.instance.insert(_conferences[i]);
     }
 
     await ConferenceProvider.instance.close();
@@ -130,12 +131,8 @@ class AllConferencesState extends State<AllConferencesPage> {
   void checkInternetConnection() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
-      
     } else if (connectivityResult == ConnectivityResult.wifi) {
-    
-    } else if (connectivityResult == ConnectivityResult.none) {
-      
-    }
+    } else if (connectivityResult == ConnectivityResult.none) {}
   }
 
   void loadConferences() async {
@@ -146,7 +143,6 @@ class AllConferencesState extends State<AllConferencesPage> {
     conferences = await loadConferencesFromDatabase();
 
     if (conferences == null || conferences.isEmpty) {
-
       try {
         Response response = await Dio().get(URL_PREFIX);
         conferences = await loadConferencesFromNetworkResponse(response);
@@ -161,7 +157,6 @@ class AllConferencesState extends State<AllConferencesPage> {
         print(e);
       }
     } else {
-
       setState(() {
         _conferences = conferences;
         _hasLoadedData = true;
@@ -171,7 +166,7 @@ class AllConferencesState extends State<AllConferencesPage> {
 
   Widget _buildCard(Conference conference) {
 
-    Widget card = GestureDetector(
+    Widget card = InkWell(
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         elevation: 8.0,
@@ -219,7 +214,9 @@ class AllConferencesState extends State<AllConferencesPage> {
                             vertical: 12.0, horizontal: 6.0),
                         child: Center(
                           child: new Text(
-                            conference.conferenceTime != null?conference.conferenceTime:'Unknown Time',
+                            conference.conferenceTime != null
+                                ? conference.conferenceTime
+                                : 'Unknown Time',
                             style: new TextStyle(
                               fontWeight: FontWeight.normal,
                               fontSize: 18,
@@ -278,30 +275,42 @@ class AllConferencesState extends State<AllConferencesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: new AppBar(
-        title: new Text('ASCIIWWDC-Flutter'),
+      appBar: AppBar(
+        title: Text('ASCIIWWDC-Flutter'),
         actions: <Widget>[
-          new IconButton(
-              icon: new Icon(Icons.search),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (context) => new SearchPage(
-                            conferences:
-                                _hasLoadedData ? _conferences : new List<String>())));
-              }),
-          new IconButton(
-              icon: new Icon(Icons.favorite_border),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (context) => FavoriteSessionssPage()));
-              }),
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => new SearchPage(
+                          conferences: _hasLoadedData
+                              ? _conferences
+                              : new List<String>())));
+            }),
+          IconButton(
+            icon: new Icon(Icons.favorite_border),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => FavoriteSessionssPage()));
+            }),
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(context, 
+                MaterialPageRoute(
+                  builder: (context) => SettingsPage()
+                )
+              );
+            },
+          ),
         ],
       ),
-      body: new SafeArea(child: _hasLoadedData ? _buildConferences() : _buildBlank()),
+      body: new SafeArea(
+          child: _hasLoadedData ? _buildConferences() : _buildBlank()),
     );
   }
 }

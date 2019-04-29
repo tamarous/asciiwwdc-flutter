@@ -44,6 +44,7 @@ class _SessionDetailState extends State<SessionDetailPage> {
 
     return WillPopScope(
       child: WebviewScaffold(
+        withJavascript: true,
         url: widget.session.sessionUrlString,
         appBar: AppBar(
           title: Text(

@@ -1,19 +1,39 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 import './Views/AllConferencesPage.dart';
+import './Redux/GlobalState.dart';
+
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+
+  final store = Store<GlobalState>(
+    appReducer,
+    initialState:GlobalState(
+      themeData: ThemeData(
+        primaryColor: Colors.white,
+      ),
+    )
+  );
+
+
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: new ThemeData(
-        primaryColor: Colors.white,
-      ),
-      home: MyHomePage(),
+
+    return StoreProvider(
+      store: store,
+      child: StoreBuilder<GlobalState>(builder: (context, store) {
+        return MaterialApp(
+          theme:store.state.themeData,
+          home: MyHomePage(),
+        );
+      })
     );
   }
 }
@@ -34,7 +54,6 @@ class _MyHomePageState extends State<MyHomePage> {
       body: new AllConferencesPage(),
     );
   }
-
 }
 
 
