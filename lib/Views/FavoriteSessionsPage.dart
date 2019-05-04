@@ -34,48 +34,62 @@ class _FavoriteSessionsState extends State<FavoriteSessionssPage> {
     var favoriteSessions = await SessionProvider.instance.getSessions(sql);
 
     setState(() {
-      _favoriteSessions = favoriteSessions;
 
-      _hasData = true;
+      if (favoriteSessions == null || favoriteSessions.length == 0) {
+        _hasData = false;
+      } else {
+        _favoriteSessions = favoriteSessions;
+        _hasData = true;
+      }
     });
   }
 
   Widget _buildSession(Session session) {
-    return GestureDetector(
-      onTap: () {
-        _showSessionDetail(session);
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 6.0,horizontal: 4.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 4.0,horizontal: 4.0),
-                child: Text(
-                  session.sessionTitle,
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 18.0,
+    return Dismissible(
+      child: GestureDetector(
+        onTap: () {
+          _showSessionDetail(session);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 6.0,horizontal: 4.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4.0,horizontal: 4.0),
+                  child: Text(
+                    session.sessionTitle,
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 18.0,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                child: Text(
-                  session.sessionConferenceName,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14.0,
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                  child: Text(
+                    session.sessionConferenceName,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.0,
+                    ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
+            
           ),
-          
         ),
+      ),
+      key:new Key(session.sessionUrlString),
+      onDismissed: (direction){
+        session.toggleFavorite();
+        _fetchFavoriteSessionsList();
+      },
+      background: Container(
+        color: Colors.red,
       ),
     );
   }

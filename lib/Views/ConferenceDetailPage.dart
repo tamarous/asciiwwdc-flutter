@@ -117,7 +117,7 @@ class _ConferenceDetailState extends State<ConferenceDetailPage>{
         titleSpacing: NavigationToolbar.kMiddleSpacing,
         snap: false,
         expandedHeight: 200.0,
-        floating: false,
+        floating: true,
         pinned: true,
         flexibleSpace: FlexibleSpaceBar(
           centerTitle: true,

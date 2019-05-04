@@ -39,6 +39,7 @@ class Conference {
     conferenceLogoUrl = map[columnLogoUrl];
     conferenceName = map[columnName];
     conferenceShortDescription = map[columnShortDescription];
+    conferenceTime = map[columnTime];
   }
 
   @override
