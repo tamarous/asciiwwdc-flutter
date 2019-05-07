@@ -20,7 +20,7 @@ class AllConferencesPage extends StatefulWidget {
 class AllConferencesState extends State<AllConferencesPage> {
   List<Conference> _conferences;
 
-  bool _hasLoadedData = false;
+  Future future;
 
   static const String URL_PREFIX = 'https://www.asciiwwdc.com';
 
@@ -66,6 +66,7 @@ class AllConferencesState extends State<AllConferencesPage> {
   }
 
   Future<List<Conference>> loadConferencesFromDatabase() async {
+
     List<Conference> conferences;
 
     conferences = await ConferenceProvider.instance.getConferences('1 = 1');
@@ -135,35 +136,20 @@ class AllConferencesState extends State<AllConferencesPage> {
     } else if (connectivityResult == ConnectivityResult.none) {}
   }
 
-  void loadConferences() async {
+  Future<List<Conference>> loadConferences() async {
     checkInternetConnection();
 
-    List<Conference> conferences;
+    future = loadConferencesFromDatabase();
 
-    conferences = await loadConferencesFromDatabase();
+    future.timeout(Duration(seconds: 3),
+    onTimeout: () async {
+      Response response = await Dio().get(URL_PREFIX);
+      future = loadConferencesFromNetworkResponse(response);
+    });
 
-    if (conferences == null || conferences.isEmpty) {
-      try {
-        Response response = await Dio().get(URL_PREFIX);
-        conferences = await loadConferencesFromNetworkResponse(response);
-
-        setState(() {
-          _conferences = conferences;
-          _hasLoadedData = true;
-        });
-
-        saveAllConferencesToDatabase();
-      } catch (e) {
-        print(e);
-      }
-    } else {
-      setState(() {
-        _conferences = conferences;
-        _hasLoadedData = true;
-      });
-    }
+    return future;
   }
-
+  
   Widget _buildCard(Conference conference) {
 
     Widget card = InkWell(
@@ -247,12 +233,13 @@ class AllConferencesState extends State<AllConferencesPage> {
     return card;
   }
 
-  Widget _buildConferences() {
-    return new ListView.builder(
+
+  Widget _buildConferences(List<Conference> conferences) {
+    return ListView.builder(
       shrinkWrap: true,
-      itemCount: _conferences.length,
+      itemCount: conferences.length,
       itemBuilder: (context, i) {
-        return _buildCard(_conferences[i]);
+        return _buildCard(conferences[i]);
       },
       padding: const EdgeInsets.all(12.0),
     );
@@ -268,7 +255,7 @@ class AllConferencesState extends State<AllConferencesPage> {
   void initState() {
     super.initState();
 
-    loadConferences();
+    future = loadConferences();
   }
 
   @override
@@ -285,9 +272,7 @@ class AllConferencesState extends State<AllConferencesPage> {
                   context,
                   new MaterialPageRoute(
                       builder: (context) => new SearchPage(
-                          conferences: _hasLoadedData
-                              ? _conferences
-                              : new List<String>())));
+                          conferences: _conferences)));
             }),
           IconButton(
             icon: new Icon(Icons.favorite_border),
@@ -309,8 +294,25 @@ class AllConferencesState extends State<AllConferencesPage> {
           ),
         ],
       ),
-      body: new SafeArea(
-          child: _hasLoadedData ? _buildConferences() : _buildBlank()),
+      body: SafeArea(
+        child: FutureBuilder<List<Conference>>(
+          builder: (context, AsyncSnapshot<List<Conference>> snap) {
+            if (snap.connectionState == ConnectionState.none || snap.connectionState == ConnectionState.waiting) {
+              return _buildBlank();
+            } 
+            if (snap.connectionState == ConnectionState.done) {
+              if (snap.hasError) {
+                return _buildBlank();
+              } else if (snap.hasData) {
+                _conferences = snap.data;
+                saveAllConferencesToDatabase();
+                return _buildConferences(_conferences);
+              }
+            }
+          },
+          future: future,
+        ),
+      ),
     );
   }
 }

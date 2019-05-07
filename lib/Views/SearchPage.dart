@@ -27,17 +27,20 @@ class _SearchState extends State<SearchPage> {
 
     List<Session> sessions = [];
 
-    for(int i = 0; i < widget.conferences.length;i++) {
-      Conference conference = widget.conferences[i];
+    if (widget.conferences == null) {
+      sessions = [];
+    } else {
+      for(int i = 0; i < widget.conferences.length;i++) {
+          Conference conference = widget.conferences[i];
 
-      for(int j = 0; j < conference.tracks.length;j++) {
-        Track track = conference.tracks[j];
-        for(int k = 0; k < track.sessions.length;k++) {
-          sessions.add(track.sessions[k]);
-        }
-      }
+          for(int j = 0; j < conference.tracks.length;j++) {
+            Track track = conference.tracks[j];
+            for(int k = 0; k < track.sessions.length;k++) {
+              sessions.add(track.sessions[k]);
+            }
+          }
+      } 
     }
-
     setState(() {
       _sessions = sessions;
     });
