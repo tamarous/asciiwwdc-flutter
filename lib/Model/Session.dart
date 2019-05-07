@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 
-import 'DataManager.dart';
+import 'data_manager.dart';
 
 final String tableSession = 'session';
 final String columnId = 'sessionId';
@@ -73,6 +73,8 @@ class Session {
 }
 
 class SessionProvider {
+
+
   factory SessionProvider() => _getInstance();
 
   static SessionProvider _instance;
@@ -89,6 +91,7 @@ class SessionProvider {
   }
 
   Database db;
+
   Future open() async {
     String path = await DataManager.instance.databaseForSessionsFullPath;
 

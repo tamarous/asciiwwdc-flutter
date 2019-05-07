@@ -3,7 +3,7 @@ import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 import '../Redux/theme_redux.dart';
-import '../Redux/GlobalState.dart';
+import '../Redux/global_state.dart';
 
 
 class SettingsPage extends StatefulWidget {

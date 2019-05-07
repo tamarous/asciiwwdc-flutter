@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
-import './Views/AllConferencesPage.dart';
-import './Redux/GlobalState.dart';
-
+import './Views/all_conferences_page.dart';
+import './Redux/global_state.dart';
 
 void main() => runApp(MyApp());
 

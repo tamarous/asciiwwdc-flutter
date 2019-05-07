@@ -4,13 +4,13 @@ import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
 import 'package:connectivity/connectivity.dart';
 
-import '../Model/Conference.dart';
-import '../Model/Session.dart';
-import '../Model/Track.dart';
-import 'SearchPage.dart';
-import 'ConferenceDetailPage.dart';
-import 'FavoriteSessionsPage.dart';
-import 'SettingsPage.dart';
+import '../Model/conference.dart';
+import '../Model/session.dart';
+import '../Model/track.dart';
+import 'search_page.dart';
+import 'conference_detail_page.dart';
+import 'favorite_sessions_page.dart';
+import 'settings_page.dart';
 
 class AllConferencesPage extends StatefulWidget {
   @override
@@ -20,9 +20,9 @@ class AllConferencesPage extends StatefulWidget {
 class AllConferencesState extends State<AllConferencesPage> {
   List<Conference> _conferences;
 
-  Future future;
+  Future _future;
 
-  static const String URL_PREFIX = 'https://www.asciiwwdc.com';
+  static const String urlPrefix = 'https://www.asciiwwdc.com';
 
   List<Session> parseSessions(List<dom.Element> sessionElements) {
     List<Session> sessions = new List<Session>();
@@ -35,7 +35,7 @@ class AllConferencesState extends State<AllConferencesPage> {
       for (int j = 0; j < aElements.length; j++) {
         dom.Element aElement = aElements[j];
         Session session = new Session();
-        session.sessionUrlString = URL_PREFIX + aElement.attributes['href'];
+        session.sessionUrlString = urlPrefix + aElement.attributes['href'];
         session.sessionTitle = aElement.attributes['title'];
 
         sessions.add(session);
@@ -102,7 +102,7 @@ class AllConferencesState extends State<AllConferencesPage> {
 
       Conference conference = new Conference();
       conference.conferenceName = conferenceName;
-      conference.conferenceLogoUrl = URL_PREFIX + conferenceLogoUrl;
+      conference.conferenceLogoUrl = urlPrefix + conferenceLogoUrl;
       conference.conferenceShortDescription = conferenceShortDescription;
       conference.tracks = tracks;
       conference.conferenceTime = conferenceTime;
@@ -139,15 +139,15 @@ class AllConferencesState extends State<AllConferencesPage> {
   Future<List<Conference>> loadConferences() async {
     checkInternetConnection();
 
-    future = loadConferencesFromDatabase();
+    _future = loadConferencesFromDatabase();
 
-    future.timeout(Duration(seconds: 3),
+    _future.timeout(Duration(seconds: 3),
     onTimeout: () async {
-      Response response = await Dio().get(URL_PREFIX);
-      future = loadConferencesFromNetworkResponse(response);
+      Response response = await Dio().get(urlPrefix);
+      _future = loadConferencesFromNetworkResponse(response);
     });
 
-    return future;
+    return _future;
   }
   
   Widget _buildCard(Conference conference) {
@@ -255,7 +255,7 @@ class AllConferencesState extends State<AllConferencesPage> {
   void initState() {
     super.initState();
 
-    future = loadConferences();
+    _future = loadConferences();
   }
 
   @override
@@ -297,20 +297,23 @@ class AllConferencesState extends State<AllConferencesPage> {
       body: SafeArea(
         child: FutureBuilder<List<Conference>>(
           builder: (context, AsyncSnapshot<List<Conference>> snap) {
-            if (snap.connectionState == ConnectionState.none || snap.connectionState == ConnectionState.waiting) {
+            if (snap.connectionState == ConnectionState.none || snap.connectionState == ConnectionState.waiting || snap.connectionState == ConnectionState.active) {
               return _buildBlank();
-            } 
-            if (snap.connectionState == ConnectionState.done) {
+            } else if (snap.connectionState == ConnectionState.done) {
               if (snap.hasError) {
                 return _buildBlank();
               } else if (snap.hasData) {
-                _conferences = snap.data;
-                saveAllConferencesToDatabase();
-                return _buildConferences(_conferences);
+                if (snap.data != null) {
+                  _conferences = snap.data;
+                  saveAllConferencesToDatabase();
+                  return _buildConferences(_conferences);
+                } else {
+                  return _buildBlank();
+                }
               }
             }
           },
-          future: future,
+          future: _future,
         ),
       ),
     );

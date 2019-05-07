@@ -1,4 +1,3 @@
-import 'package:redux/redux.dart';
 import 'package:flutter/material.dart';
 
 import 'theme_redux.dart';
@@ -13,7 +12,7 @@ class GlobalState {
 
 GlobalState appReducer(GlobalState state, action) {
   return GlobalState(
-    themeData: ThemeDataReducer(state.themeData, action),
+    themeData: themeDataReducer(state.themeData, action),
   );
 }
 
