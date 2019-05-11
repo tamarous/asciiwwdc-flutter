@@ -66,7 +66,6 @@ class AllConferencesState extends State<AllConferencesPage> {
   }
 
   Future<List<Conference>> loadConferencesFromDatabase() async {
-
     List<Conference> conferences;
 
     conferences = await ConferenceProvider.instance.getConferences('1 = 1');
@@ -139,19 +138,19 @@ class AllConferencesState extends State<AllConferencesPage> {
   Future<List<Conference>> loadConferences() async {
     checkInternetConnection();
 
-    _future = loadConferencesFromDatabase();
+    Response response = await Dio().get(urlPrefix);
+    _future = loadConferencesFromNetworkResponse(response);
 
-    _future.timeout(Duration(seconds: 3),
-    onTimeout: () async {
-      Response response = await Dio().get(urlPrefix);
-      _future = loadConferencesFromNetworkResponse(response);
-    });
+    // _future = loadConferencesFromDatabase();
+    // _future.timeout(Duration(seconds: 3), onTimeout: () async {
+    //   Response response = await Dio().get(urlPrefix);
+    //   _future = loadConferencesFromNetworkResponse(response);
+    // });
 
     return _future;
   }
-  
-  Widget _buildCard(Conference conference) {
 
+  Widget _buildCard(Conference conference) {
     Widget card = InkWell(
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -233,7 +232,6 @@ class AllConferencesState extends State<AllConferencesPage> {
     return card;
   }
 
-
   Widget _buildConferences(List<Conference> conferences) {
     return ListView.builder(
       shrinkWrap: true,
@@ -266,30 +264,27 @@ class AllConferencesState extends State<AllConferencesPage> {
         title: Text('ASCIIWWDC-Flutter'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  new MaterialPageRoute(
-                      builder: (context) => new SearchPage(
-                          conferences: _conferences)));
-            }),
+              icon: Icon(Icons.search),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (context) =>
+                            new SearchPage(conferences: _conferences)));
+              }),
           IconButton(
-            icon: new Icon(Icons.favorite_border),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  new MaterialPageRoute(
-                      builder: (context) => FavoriteSessionssPage()));
-            }),
+              icon: new Icon(Icons.favorite_border),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (context) => FavoriteSessionssPage()));
+              }),
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {
-              Navigator.push(context, 
-                MaterialPageRoute(
-                  builder: (context) => SettingsPage()
-                )
-              );
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()));
             },
           ),
         ],
@@ -297,19 +292,19 @@ class AllConferencesState extends State<AllConferencesPage> {
       body: SafeArea(
         child: FutureBuilder<List<Conference>>(
           builder: (context, AsyncSnapshot<List<Conference>> snap) {
-            if (snap.connectionState == ConnectionState.none || snap.connectionState == ConnectionState.waiting || snap.connectionState == ConnectionState.active) {
+            if (snap.connectionState == ConnectionState.none ||
+                snap.connectionState == ConnectionState.waiting ||
+                snap.connectionState == ConnectionState.active) {
               return _buildBlank();
             } else if (snap.connectionState == ConnectionState.done) {
               if (snap.hasError) {
                 return _buildBlank();
               } else if (snap.hasData) {
-                if (snap.data != null) {
-                  _conferences = snap.data;
-                  saveAllConferencesToDatabase();
-                  return _buildConferences(_conferences);
-                } else {
-                  return _buildBlank();
-                }
+                _conferences = snap.data;
+                //saveAllConferencesToDatabase();
+                return _buildConferences(_conferences);
+              } else {
+                return _buildBlank();
               }
             }
           },
