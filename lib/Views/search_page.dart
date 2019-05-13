@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_search/material_search.dart';
 
-import '../Model/conference.dart';
-import '../Model/session.dart';
-import '../Model/track.dart';
+import 'package:asciiwwdc/Model/models.dart';
 import 'session_detail_page.dart';
 
 class SearchPage extends StatefulWidget {

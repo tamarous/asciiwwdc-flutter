@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../Model/conference.dart';
+import 'package:asciiwwdc/Model/models.dart';
 import 'session_detail_page.dart';
 
 class ConferenceDetailPage extends StatefulWidget {

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:share/share.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../Model/session.dart';
+import 'package:asciiwwdc/Model/models.dart';
 
 class SessionDetailPage extends StatefulWidget {
   final Session session;

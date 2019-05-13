@@ -4,9 +4,7 @@ import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
 import 'package:connectivity/connectivity.dart';
 
-import '../Model/conference.dart';
-import '../Model/session.dart';
-import '../Model/track.dart';
+import 'package:asciiwwdc/Model/models.dart';
 import 'search_page.dart';
 import 'conference_detail_page.dart';
 import 'favorite_sessions_page.dart';

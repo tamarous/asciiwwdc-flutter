@@ -3,11 +3,11 @@ import 'package:sqflite/sqflite.dart';
 import 'data_manager.dart';
 
 final String tableSession = 'session';
-final String columnId = 'sessionId';
+final String columnSessionId = 'sessionId';
 final String columnTitle = 'sessionTitle';
 final String columnUrlString = 'sessionUrlString';
 final String columnFavorite = 'sessionIsFavorite';
-final String columnTrackId = 'trackId';
+final String columnOfTrackId = 'trackId';
 final String columnConferenceName = 'conferenceName';
 
 class Session {
@@ -28,20 +28,20 @@ class Session {
       columnConferenceName: sessionConferenceName,
     };
     if (sessionId != null) {
-      map[columnId] = sessionId;
+      map[columnSessionId] = sessionId;
     }
     if (trackId != null) {
-      map[columnTrackId] = trackId;
+      map[columnOfTrackId] = trackId;
     }
     return map;
   }
 
   Session.fromMap(Map<String, dynamic> map) {
-    sessionId = map[columnId];
+    sessionId = map[columnSessionId];
     sessionTitle = map[columnTitle];
     sessionUrlString = map[columnUrlString];
     _isFavorite = map[columnFavorite] == 1;
-    trackId = map[columnTrackId];
+    trackId = map[columnOfTrackId];
     sessionConferenceName = map[columnConferenceName];
   }
 
@@ -99,11 +99,11 @@ class SessionProvider {
         onCreate: (Database db, int version) async {
       await db.execute('''
         create table $tableSession (
-          $columnId integer primary key autoincrement,
+          $columnSessionId integer primary key autoincrement,
           $columnTitle text not null,
           $columnUrlString text not null,
           $columnFavorite integer not null,
-          $columnTrackId integer not null,
+          $columnOfTrackId integer not null,
           $columnConferenceName text not null
         )
       ''');
@@ -127,13 +127,13 @@ class SessionProvider {
 
     List<Map> maps = await db.query(tableSession,
         columns: [
-          columnId,
+          columnSessionId,
           columnTitle,
           columnUrlString,
           columnFavorite,
           columnConferenceName
         ],
-        where: '$columnId = ?',
+        where: '$columnSessionId = ?',
         whereArgs: [sessionId]);
 
     if (maps.length > 0) {
@@ -149,7 +149,7 @@ class SessionProvider {
 
     List<Map> sessionMaps = await db.query(tableSession,
         columns: [
-          columnId,
+          columnSessionId,
           columnTitle,
           columnUrlString,
           columnFavorite,
@@ -172,7 +172,7 @@ class SessionProvider {
     }
 
     int result = await db
-        .delete(tableSession, where: '$columnId = ?', whereArgs: [sessionId]);
+        .delete(tableSession, where: '$columnSessionId = ?', whereArgs: [sessionId]);
 
     return result;
   }
@@ -183,7 +183,7 @@ class SessionProvider {
     }
 
     int result = await db.update(tableSession, session.toMap(),
-        where: '$columnId = ?', whereArgs: [session.sessionId]);
+        where: '$columnSessionId = ?', whereArgs: [session.sessionId]);
 
     return result;
   }
