@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
-import 'package:html/parser.dart' as parser;
-import 'package:html/dom.dart' as dom;
-import 'package:connectivity/connectivity.dart';
-
 import 'package:asciiwwdc/Model/models.dart';
-import 'search_page.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:html/dom.dart' as dom;
+import 'package:html/parser.dart' as parser;
+
 import 'conference_detail_page.dart';
 import 'favorite_sessions_page.dart';
+import 'search_page.dart';
 import 'settings_page.dart';
 
 class AllConferencesPage extends StatefulWidget {
@@ -33,7 +33,7 @@ class AllConferencesState extends State<AllConferencesPage> {
       for (int j = 0; j < aElements.length; j++) {
         dom.Element aElement = aElements[j];
         Session session = new Session();
-        session.sessionUrlString = urlPrefix + aElement.attributes['href'];
+        session.sessionUrlString = aElement.attributes['href'];
         session.sessionTitle = aElement.attributes['title'];
 
         sessions.add(session);
@@ -151,11 +151,20 @@ class AllConferencesState extends State<AllConferencesPage> {
   Widget _buildCard(Conference conference) {
     Widget card = InkWell(
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         elevation: 8.0,
         margin: EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
         child: Container(
-          decoration: BoxDecoration(color: Color.fromRGBO(252, 250, 242, 1.0)),
+          decoration: BoxDecoration(
+              color: Color.fromRGBO(252, 250, 242, 1.0),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black54,
+                    offset: Offset(2.0, 2.0),
+                    blurRadius: 4.0)
+              ]),
           child: new Row(
             children: <Widget>[
               new Expanded(

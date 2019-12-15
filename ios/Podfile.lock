@@ -17,13 +17,13 @@ PODS:
 
 DEPENDENCIES:
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
-  - Flutter (from `.symlinks/flutter/ios-release`)
+  - Flutter (from `.symlinks/flutter/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - FMDB
     - Reachability
 
@@ -31,7 +31,7 @@ EXTERNAL SOURCES:
   connectivity:
     :path: ".symlinks/plugins/connectivity/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios-release"
+    :path: ".symlinks/flutter/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
   sqflite:
@@ -41,7 +41,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   connectivity: c72716e202a1225ec4810740d5cb56b8ae3bf4cc
-  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   share: 7d22fe8baedfe93aefd864bf0b73f29711fbb0a3
@@ -50,4 +50,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: aff02bfeed411c636180d6812254b2daeea14d09
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.8.4
