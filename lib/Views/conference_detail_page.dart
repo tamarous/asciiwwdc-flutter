@@ -13,8 +13,6 @@ class ConferenceDetailPage extends StatefulWidget {
 }
 
 class _ConferenceDetailState extends State<ConferenceDetailPage>{
-
-
   Widget _buildRow(int row, int column) {
 
     return GestureDetector(
@@ -82,18 +80,6 @@ class _ConferenceDetailState extends State<ConferenceDetailPage>{
   @override
   Widget build(BuildContext context) {
     
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: Text('Sessions'),
-    //   ),
-    //   body: new SafeArea(
-    //     child: new ListView.builder(
-    //       itemBuilder: (BuildContext context, int row) => _buildExpansionTile(row),
-    //       itemCount: widget.conference.tracks.length,
-    //     ),
-    //   ),
-    // );
-
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: _sliverBuilder,
