@@ -150,78 +150,63 @@ class AllConferencesState extends State<AllConferencesPage> {
 
   Widget _buildCard(Conference conference) {
     Widget card = InkWell(
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        elevation: 8.0,
-        margin: EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
-        child: Container(
-          decoration: BoxDecoration(
-              color: Color.fromRGBO(252, 250, 242, 1.0),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black54,
-                    offset: Offset(2.0, 2.0),
-                    blurRadius: 4.0)
-              ]),
-          child: new Row(
-            children: <Widget>[
-              new Expanded(
-                child: new Container(
-                  margin: EdgeInsets.only(left: 6.0),
-                  child: new Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      new Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 12.0, horizontal: 6.0),
-                        child: Center(
-                          child: new Text(
-                            conference.conferenceName,
-                            style: new TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24,
-                              color: Color.fromRGBO(67, 67, 67, 1.0),
-                            ),
-                          ),
-                        ),
+        child: Card(
+        child: Center(
+          child: Container(
+            decoration: BoxDecoration(
+                color: Color.fromRGBO(252, 250, 242, 1.0),
+            ),
+            height: 160,
+            child: new Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                new Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 6.0),
+                  child: Center(
+                    child: new Text(
+                      conference.conferenceName,
+                      style: new TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        color: Color.fromRGBO(67, 67, 67, 1.0),
                       ),
-                      new Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 12.0, horizontal: 6.0),
-                        child: Center(
-                          child: new Text(
-                            conference.conferenceShortDescription,
-                            style: new TextStyle(
-                              fontWeight: FontWeight.normal,
-                              fontSize: 18,
-                              color: Color.fromRGBO(130, 130, 130, 1.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      new Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 12.0, horizontal: 6.0),
-                        child: Center(
-                          child: new Text(
-                            conference.conferenceTime != null
-                                ? conference.conferenceTime
-                                : 'Unknown Time',
-                            style: new TextStyle(
-                              fontWeight: FontWeight.normal,
-                              fontSize: 18,
-                              color: Color.fromRGBO(130, 130, 130, 1.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              )
-            ],
+                new Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 6.0),
+                  child: Center(
+                    child: new Text(
+                      conference.conferenceShortDescription,
+                      textAlign: TextAlign.center,
+                      style: new TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 18,
+                        color: Color.fromRGBO(130, 130, 130, 1.0),
+                      ),
+                    ),
+                  ),
+                ),
+                new Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 6.0),
+                  child: Center(
+                    child: new Text(
+                      conference.conferenceTime != null
+                          ? _formatTime(conference.conferenceTime)
+                          : 'Unknown Time',
+                      style: new TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 18,
+                        color: Color.fromRGBO(130, 130, 130, 1.0),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -239,6 +224,11 @@ class AllConferencesState extends State<AllConferencesPage> {
     return card;
   }
 
+  String _formatTime(String originalString) {
+    var times = originalString.split("T");
+    return "${times[0]} ${times[1]}";
+  }
+
   Widget _buildConferences(List<Conference> conferences) {
     return ListView.builder(
       shrinkWrap: true,
@@ -246,7 +236,6 @@ class AllConferencesState extends State<AllConferencesPage> {
       itemBuilder: (context, i) {
         return _buildCard(conferences[i]);
       },
-      padding: const EdgeInsets.all(12.0),
     );
   }
 
