@@ -16,13 +16,16 @@ class AllConferencesState extends State<AllConferencesPage> {
   List<Conference> _conferences;
   Widget _buildCard(Conference conference) {
     Widget card = InkWell(
-      child: Card(
-        child: Center(
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20),
+        child: Card(
+          elevation: 14.0,
           child: Container(
             decoration: BoxDecoration(
               color: Color.fromRGBO(252, 250, 242, 1.0),
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
             ),
-            height: 160,
+            height: 240,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[

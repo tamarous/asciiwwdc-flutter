@@ -54,6 +54,7 @@ class _SearchState extends State<SearchPage> {
         results: _sessions.map((Session session) => MaterialSearchResult<Session>(
           value: session,
           text: session.sessionTitle,
+          icon: Icons.chrome_reader_mode,
         )).toList(),
         filter: (dynamic value, String query) {
           return (value as Session).sessionTitle.toLowerCase().trim().contains(query.toLowerCase().trim());
