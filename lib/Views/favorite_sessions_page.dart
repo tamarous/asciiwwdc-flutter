@@ -6,7 +6,7 @@ import 'package:asciiwwdc/Model/models.dart';
 class FavoriteSessionssPage extends StatefulWidget {
 
   @override
-  _FavoriteSessionsState createState() => new _FavoriteSessionsState();
+  _FavoriteSessionsState createState() => _FavoriteSessionsState();
 
 }
 
@@ -83,7 +83,7 @@ class _FavoriteSessionsState extends State<FavoriteSessionssPage> {
           ),
         ),
       ),
-      key:new Key(session.sessionUrlString),
+      key:Key(session.sessionUrlString),
       onDismissed: (direction){
         session.toggleFavorite();
         _fetchFavoriteSessionsList();
@@ -97,7 +97,7 @@ class _FavoriteSessionsState extends State<FavoriteSessionssPage> {
   Widget _buildSessionLists() {
 
     return ListView.separated(
-        separatorBuilder: (BuildContext context, int index) => new Divider(),
+        separatorBuilder: (BuildContext context, int index) => Divider(),
         itemBuilder: (context, i)=> _buildSession(_favoriteSessions[i]),
         itemCount: _favoriteSessions.length,
     );
@@ -126,7 +126,7 @@ class _FavoriteSessionsState extends State<FavoriteSessionssPage> {
   @override
   Widget build(BuildContext context) {
 
-    return new Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Text('Favorite Tracks'),
       ),

@@ -11,7 +11,7 @@ class SearchPage extends StatefulWidget {
   SearchPage({Key key, @required this.conferences}):super(key: key);
 
   @override
-  _SearchState createState() => new _SearchState();
+  _SearchState createState() => _SearchState();
 }
 
 class _SearchState extends State<SearchPage> {
@@ -47,11 +47,11 @@ class _SearchState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     
-    return new Scaffold(
+    return Scaffold(
       body: MaterialSearch(
         limit: 30,
         placeholder: 'Search',
-        results: _sessions.map((Session session) => new MaterialSearchResult<Session>(
+        results: _sessions.map((Session session) => MaterialSearchResult<Session>(
           value: session,
           text: session.sessionTitle,
         )).toList(),
@@ -59,8 +59,8 @@ class _SearchState extends State<SearchPage> {
           return (value as Session).sessionTitle.toLowerCase().trim().contains(query.toLowerCase().trim());
         },
         onSelect: (dynamic value) {
-          Navigator.push(context, new MaterialPageRoute(
-              builder: (context) => new SessionDetailPage(session: value as Session),
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => SessionDetailPage(session: value as Session),
           ));
         },
         onSubmit: (String submitted) {

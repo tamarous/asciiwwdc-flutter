@@ -85,7 +85,7 @@ class SessionProvider {
 
   static SessionProvider _getInstance() {
     if (_instance == null) {
-      _instance = new SessionProvider._internal();
+      _instance = SessionProvider._internal();
     }
     return _instance;
   }

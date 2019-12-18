@@ -50,7 +50,7 @@ class TrackProvider {
 
   static TrackProvider _getInstance() {
     if (_instance == null) {
-      _instance = new TrackProvider._internal();
+      _instance = TrackProvider._internal();
     }
 
     return _instance;

@@ -14,7 +14,7 @@ class DataManager {
 
     static DataManager _getInstance() {
       if (_instance == null) {
-        _instance = new DataManager._internal();
+        _instance = DataManager._internal();
       }
 
       return _instance;

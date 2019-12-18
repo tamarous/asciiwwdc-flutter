@@ -9,7 +9,7 @@ class ConferenceDetailPage extends StatefulWidget {
   ConferenceDetailPage({Key key, @required this.conference}):super(key:key);
 
   @override
-  _ConferenceDetailState createState() => new _ConferenceDetailState();
+  _ConferenceDetailState createState() => _ConferenceDetailState();
 }
 
 class _ConferenceDetailState extends State<ConferenceDetailPage>{
@@ -46,7 +46,7 @@ class _ConferenceDetailState extends State<ConferenceDetailPage>{
         ),
       ),
       onTap: () async {
-        Navigator.push(context, new MaterialPageRoute(builder: (context) => new SessionDetailPage(session: widget.conference.tracks[row].sessions[column],)),);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => SessionDetailPage(session: widget.conference.tracks[row].sessions[column],)),);
       },
     );
   }
@@ -64,15 +64,15 @@ class _ConferenceDetailState extends State<ConferenceDetailPage>{
 
   Widget _buildExpansionTile(int row) {
 
-    return new ExpansionTile(
-      title: new Text(
+    return ExpansionTile(
+      title: Text(
         widget.conference.tracks[row].trackName,
         style: TextStyle(
           fontWeight: FontWeight.normal,
           fontSize: 20.0,
         ),
         ),
-      key: new PageStorageKey(widget.conference.tracks[row]),
+      key: PageStorageKey(widget.conference.tracks[row]),
       children: _buildExpansionTileChildren(row),
     );
   }

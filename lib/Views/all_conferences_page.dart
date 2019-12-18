@@ -12,7 +12,7 @@ import 'settings_page.dart';
 
 class AllConferencesPage extends StatefulWidget {
   @override
-  AllConferencesState createState() => new AllConferencesState();
+  AllConferencesState createState() => AllConferencesState();
 }
 
 class AllConferencesState extends State<AllConferencesPage> {
@@ -23,7 +23,7 @@ class AllConferencesState extends State<AllConferencesPage> {
   static const String urlPrefix = 'https://www.asciiwwdc.com';
 
   List<Session> parseSessions(List<dom.Element> sessionElements) {
-    List<Session> sessions = new List<Session>();
+    List<Session> sessions = List<Session>();
 
     for (int i = 0; i < sessionElements.length; i++) {
       dom.Element sessionElement = sessionElements[i];
@@ -32,7 +32,7 @@ class AllConferencesState extends State<AllConferencesPage> {
 
       for (int j = 0; j < aElements.length; j++) {
         dom.Element aElement = aElements[j];
-        Session session = new Session();
+        Session session = Session();
         session.sessionUrlString = aElement.attributes['href'];
         session.sessionTitle = aElement.attributes['title'];
 
@@ -44,7 +44,7 @@ class AllConferencesState extends State<AllConferencesPage> {
   }
 
   List<Track> parseTracks(List<dom.Element> trackElements) {
-    List<Track> tracks = new List<Track>();
+    List<Track> tracks = List<Track>();
 
     for (int i = 0; i < trackElements.length; i++) {
       dom.Element trackElement = trackElements[i];
@@ -54,7 +54,7 @@ class AllConferencesState extends State<AllConferencesPage> {
       List<Session> sessions =
           parseSessions(trackElement.getElementsByClassName('sessions'));
 
-      Track track = new Track();
+      Track track = Track();
       track.trackName = trackName;
       track.sessions = sessions;
 
@@ -75,7 +75,7 @@ class AllConferencesState extends State<AllConferencesPage> {
 
   Future<List<Conference>> loadConferencesFromNetworkResponse(
       Response response) async {
-    List<Conference> conferences = new List();
+    List<Conference> conferences = List();
 
     var document = parser.parse(response.data);
 
@@ -97,7 +97,7 @@ class AllConferencesState extends State<AllConferencesPage> {
           .first
           .attributes['content'];
 
-      Conference conference = new Conference();
+      Conference conference = Conference();
       conference.conferenceName = conferenceName;
       conference.conferenceLogoUrl = urlPrefix + conferenceLogoUrl;
       conference.conferenceShortDescription = conferenceShortDescription;
@@ -157,16 +157,16 @@ class AllConferencesState extends State<AllConferencesPage> {
                 color: Color.fromRGBO(252, 250, 242, 1.0),
             ),
             height: 160,
-            child: new Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                new Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(
                       horizontal: 6.0),
                   child: Center(
-                    child: new Text(
+                    child: Text(
                       conference.conferenceName,
-                      style: new TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                         color: Color.fromRGBO(67, 67, 67, 1.0),
@@ -174,14 +174,14 @@ class AllConferencesState extends State<AllConferencesPage> {
                     ),
                   ),
                 ),
-                new Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(
                       horizontal: 6.0),
                   child: Center(
-                    child: new Text(
+                    child: Text(
                       conference.conferenceShortDescription,
                       textAlign: TextAlign.center,
-                      style: new TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.normal,
                         fontSize: 18,
                         color: Color.fromRGBO(130, 130, 130, 1.0),
@@ -189,15 +189,15 @@ class AllConferencesState extends State<AllConferencesPage> {
                     ),
                   ),
                 ),
-                new Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(
                       horizontal: 6.0),
                   child: Center(
-                    child: new Text(
+                    child: Text(
                       conference.conferenceTime != null
                           ? _formatTime(conference.conferenceTime)
                           : 'Unknown Time',
-                      style: new TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.normal,
                         fontSize: 18,
                         color: Color.fromRGBO(130, 130, 130, 1.0),
@@ -213,8 +213,8 @@ class AllConferencesState extends State<AllConferencesPage> {
       onTap: () {
         Navigator.push(
           context,
-          new MaterialPageRoute(
-              builder: (context) => new ConferenceDetailPage(
+          MaterialPageRoute(
+              builder: (context) => ConferenceDetailPage(
                     conference: conference,
                   )),
         );
@@ -264,16 +264,16 @@ class AllConferencesState extends State<AllConferencesPage> {
               onPressed: () {
                 Navigator.push(
                     context,
-                    new MaterialPageRoute(
+                    MaterialPageRoute(
                         builder: (context) =>
-                            new SearchPage(conferences: _conferences)));
+                            SearchPage(conferences: _conferences)));
               }),
           IconButton(
-              icon: new Icon(Icons.favorite_border),
+              icon: Icon(Icons.favorite_border),
               onPressed: () {
                 Navigator.push(
                     context,
-                    new MaterialPageRoute(
+                    MaterialPageRoute(
                         builder: (context) => FavoriteSessionssPage()));
               }),
           IconButton(

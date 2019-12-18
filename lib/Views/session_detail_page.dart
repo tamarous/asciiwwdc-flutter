@@ -11,7 +11,7 @@ class SessionDetailPage extends StatefulWidget {
   SessionDetailPage({Key key, @required this.session}) : super(key: key);
 
   @override
-  _SessionDetailState createState() => new _SessionDetailState();
+  _SessionDetailState createState() => _SessionDetailState();
 }
 
 class _SessionDetailState extends State<SessionDetailPage> {
