@@ -15,7 +15,6 @@ class SettingsPage extends StatefulWidget {
 class SettingsPageState extends State<SettingsPage> {
 
   Store<GlobalState> _store;
-  Color _selectedColor;
 
   final List<Color> _themeColors = [
     Colors.white,
@@ -38,17 +37,10 @@ class SettingsPageState extends State<SettingsPage> {
     Colors.purple: 'Purple',
   };
 
-  @override
-  void initState() {
-    super.initState();
-
-  }
 
   @override
   Widget build(BuildContext context) {
     _store = StoreProvider.of(context);
-    _selectedColor = _store.state.themeData.primaryColor;
-
 
     return Scaffold(
       appBar: AppBar(
